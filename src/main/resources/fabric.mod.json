@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "devsdream",
+  "version": "${version}",
+
+  "name": "Developer's Dream",
+  "description": "A mod that adds new tools and options for datapack developers, as a proof-of-concept and for other projects.",
+  "authors": [
+    "ChromaKey81"
+  ],
+  "contact": {
+    "homepage": "https://discord.gg/B4ehSQd",
+    "sources": "https://github.com/ChromaKey81/devsdream-fabric"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/devsdream/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.devsdream.Main"
+    ]
+  },
+  "mixins": [],
+
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.17.x",
+    "java": ">=16"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
