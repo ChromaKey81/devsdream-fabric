@@ -10,7 +10,7 @@ public class Main implements ModInitializer {
     @Override
     public void onInitialize() {
         final Item FABRIC_ITEM = new Item(new Item.Settings().maxDamageIfAbsent(3));
-        Registry.register(Registry.ITEM, new Identifier("tutorial", "fabric_item"), FABRIC_ITEM);
+        Registry.register(Registry.ITEM, new Identifier("wee", "woo"), FABRIC_ITEM);
     }
     
 }
