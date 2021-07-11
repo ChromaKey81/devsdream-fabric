@@ -141,7 +141,11 @@ public class Main implements ModInitializer {
                 String id = namespace.getName() + ":" + FilenameUtils.getBaseName(block.getName());
                 try {
                   Block newBlock = new Block(BlockReader.readSettings(getObjectFromFile(block), materialsMap, soundGroupMap));
-                  Registry.register(Registry.BLOCK, new Identifier(id), newBlock);
+                  try {
+                    Registry.register(Registry.BLOCK, new Identifier(id), newBlock);
+                  } catch (RuntimeException e) {
+                    Registry.register(Registry.BLOCK, Registry.BLOCK.getRawId(Registry.BLOCK.get(new Identifier(id))), id, newBlock);
+                  }
                   blockAmount++;
                 } catch (JsonSyntaxException e) {
                   logger.error("Couldn't register block '" + id + "': " + e.getMessage());
