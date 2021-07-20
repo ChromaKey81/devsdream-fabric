@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
@@ -12,6 +13,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.function.CommandFunction;
 import net.minecraft.server.function.CommandFunctionManager;
@@ -225,6 +228,15 @@ public class ChromaJsonHelper extends JsonHelper {
     }
     public static Feature<? extends FeatureConfig> getFeatureOrDefault(JsonObject object, String key, Feature<?> defaultFeature) throws JsonSyntaxException {
         return object.has(key) ? asFeature(object.get(key), key) : defaultFeature;
+    }
+
+    public static NbtCompound getNbt(JsonObject object, String key) throws JsonSyntaxException {
+        try {
+            NbtCompound nbtCompound = StringNbtReader.parse(JsonHelper.getString(object, key));
+            return nbtCompound;
+         } catch (CommandSyntaxException e) {
+            throw new JsonSyntaxException(e.getMessage());
+         }
     }
 
     /**

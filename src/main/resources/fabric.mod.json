@@ -23,7 +23,7 @@
     ]
   },
   "mixins": [],
-
+  "accessWidener": "devsdream.accesswidener",
   "depends": {
     "fabricloader": ">=0.11.3",
     "fabric": "*",

@@ -1,0 +1,17 @@
+accessWidener v1 named
+extendable method net/minecraft/recipe/ShapedRecipe readSymbols (Lcom/google/gson/JsonObject;)Ljava/util/Map;
+extendable method net/minecraft/recipe/ShapedRecipe removePadding ([Ljava/lang/String;)[Ljava/lang/String;
+extendable method net/minecraft/recipe/ShapedRecipe getPattern (Lcom/google/gson/JsonArray;)[Ljava/lang/String;
+extendable method net/minecraft/recipe/ShapedRecipe createPatternMatrix ([Ljava/lang/String;Ljava/util/Map;II)Lnet/minecraft/util/collection/DefaultedList;
+
+accessible class net/minecraft/block/AirBlock
+accessible class net/minecraft/entity/effect/StatusEffect
+accessible class net/minecraft/block/AbstractBannerBlock
+accessible class net/minecraft/block/AbstractButtonBlock
+accessible class net/minecraft/block/AbstractCauldronBlock
+accessible class net/minecraft/block/AttachedStemBlock
+accessible class net/minecraft/block/AzaleaBlock
+accessible class net/minecraft/block/BarrierBlock
+accessible class net/minecraft/block/BigDripleafBlock
+accessible class net/minecraft/block/BigDripleafStemBlock
+accessible class net/minecraft/block/BlastFurnaceBlock

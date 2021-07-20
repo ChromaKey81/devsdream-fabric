@@ -1,10 +1,7 @@
 package net.devsdream.util;
 
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Supplier;
-
-import com.google.gson.JsonObject;
 
 import net.minecraft.block.AbstractBannerBlock;
 import net.minecraft.block.AbstractButtonBlock;
@@ -68,7 +65,6 @@ import net.minecraft.block.LeverBlock;
 import net.minecraft.block.LilyPadBlock;
 import net.minecraft.block.LoomBlock;
 import net.minecraft.block.MelonBlock;
-import net.minecraft.block.MushroomPlantBlock;
 import net.minecraft.block.NetherWartBlock;
 import net.minecraft.block.NyliumBlock;
 import net.minecraft.block.PaneBlock;
@@ -82,7 +78,6 @@ import net.minecraft.block.RedstoneTorchBlock;
 import net.minecraft.block.RepeaterBlock;
 import net.minecraft.block.RodBlock;
 import net.minecraft.block.RootsBlock;
-import net.minecraft.block.AbstractBlock.Settings;
 import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.ChestBlockEntity;
@@ -90,11 +85,9 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectType;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.item.Item;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.HugeFungusFeatureConfig;
 
