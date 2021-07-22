@@ -15,7 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.devsdream.crafting.Serializers;
-import net.devsdream.crafting.StonecuttingNBTRecipe;
 import net.devsdream.objectpack.BlockReader;
 import net.devsdream.util.PublicConstructors;
 import net.fabricmc.api.ModInitializer;
@@ -24,7 +23,6 @@ import net.minecraft.block.Material;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectType;
 import net.minecraft.item.Item;
-import net.minecraft.recipe.RecipeType;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
@@ -34,7 +32,7 @@ public class Main implements ModInitializer {
 
     public static final String MODID = "devsdream";
 
-    private static final Logger logger = LogManager.getLogger(MODID);
+    public static final Logger logger = LogManager.getLogger(MODID);
 
     public static JsonObject getObjectFromFile(File file) throws JsonSyntaxException {
         try (FileReader reader = new FileReader(file)) {
@@ -106,8 +104,9 @@ public class Main implements ModInitializer {
     @Override
     public void onInitialize() {
         Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "crafting_shaped_nbt"), Serializers.CRAFTING_SHAPED_NBT);
-        Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "crafting_shapeless_nbt"), Serializers.CRAFTING_SHAPED_NBT);
+        Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "crafting_shapeless_nbt"), Serializers.CRAFTING_SHAPELESS_NBT);
         Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "stonecutting_nbt"), Serializers.STONECUTTING_NBT);
+        Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "smithing_nbt"), Serializers.SMITHING_NBT);
 
         try {
           File[] objectpacks = new File(System.getProperty("user.dir") + "/objectpacks").listFiles();

@@ -2,6 +2,7 @@ package net.devsdream.util;
 
 import java.util.NoSuchElementException;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -48,6 +49,9 @@ public class ChromaJsonHelper extends JsonHelper {
     }
     public static boolean getBooleanOrDefault(JsonObject object, String element, boolean defaultValue) throws JsonSyntaxException {
         return JsonHelper.getBoolean(object, element, defaultValue);
+    }
+    public static JsonArray getArrayOrDefault(JsonObject object, String element, JsonArray defaultValue) throws JsonSyntaxException {
+        return JsonHelper.getArray(object, element, defaultValue);
     }
     public static Item getItemOrDefault(JsonObject object, String element, Item defaultValue) throws JsonSyntaxException {
         return JsonHelper.getItem(object, element, defaultValue);
