@@ -316,7 +316,7 @@ public class BlockReader {
                 if (JsonHelper.getBoolean(object, "allows_spawning")) {
                     settings.allowsSpawning((state, world, pos, type) -> true);
                 } else {
-                    settings.allowsSpawning((state, world, pos, type) -> true);
+                    settings.allowsSpawning((state, world, pos, type) -> false);
                 }
             } else {
                 throw new JsonSyntaxException(
