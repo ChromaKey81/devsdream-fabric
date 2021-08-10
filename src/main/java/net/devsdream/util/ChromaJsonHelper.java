@@ -16,6 +16,8 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.particle.ParticleType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.function.CommandFunction;
 import net.minecraft.server.function.CommandFunctionManager;
@@ -216,7 +218,7 @@ public class ChromaJsonHelper extends JsonHelper {
     public static Feature<? extends FeatureConfig> asFeature(JsonElement element, String name) throws JsonSyntaxException {
         if (element.isJsonPrimitive()) {
             String string = element.getAsString();
-            return (Feature<?>)Registry.FEATURE.getOrEmpty(new Identifier(string)).orElseThrow(() -> {
+            return (Feature<? extends FeatureConfig>)Registry.FEATURE.getOrEmpty(new Identifier(string)).orElseThrow(() -> {
                return new JsonSyntaxException("Expected " + name + " to be a feature, was unknown string '" + string + "'");
             });
          } else {
@@ -241,6 +243,27 @@ public class ChromaJsonHelper extends JsonHelper {
          } catch (CommandSyntaxException e) {
             throw new JsonSyntaxException(e.getMessage());
          }
+    }
+
+    public static ParticleType<?> asParticleType(JsonElement element, String name) throws JsonSyntaxException {
+        if (element.isJsonPrimitive()) {
+            String string = element.getAsString();
+            return (ParticleType<?>)Registry.PARTICLE_TYPE.getOrEmpty(new Identifier(string)).orElseThrow(() -> {
+               return new JsonSyntaxException("Expected " + name + " to be a feature, was unknown string '" + string + "'");
+            });
+         } else {
+            throw new JsonSyntaxException("Expected " + name + " to be a feature, was " + getType(element));
+         }
+    }
+    public static ParticleType<?> getParticleType(JsonObject object, String key) throws JsonSyntaxException {
+        if (object.has(key)) {
+            return asParticleType(object.get(key), key);
+         } else {
+            throw new JsonSyntaxException("Missing " + key + ", expected to find a status effect");
+         }
+    }
+    public static ParticleType<?> getParticleTypeOrDefault(JsonObject object, String key, ParticleType<?> defaultParticleType) throws JsonSyntaxException {
+        return object.has(key) ? asParticleType(object.get(key), key) : defaultParticleType;
     }
 
     /**

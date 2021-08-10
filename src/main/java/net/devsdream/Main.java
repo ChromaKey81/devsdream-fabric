@@ -2,6 +2,7 @@ package net.devsdream;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,13 +17,14 @@ import org.apache.logging.log4j.Logger;
 
 import net.devsdream.crafting.Serializers;
 import net.devsdream.objectpack.BlockReader;
-import net.devsdream.util.PublicConstructors;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectType;
 import net.minecraft.item.Item;
+import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
@@ -109,92 +111,92 @@ public class Main implements ModInitializer {
         Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "smithing_nbt"), Serializers.SMITHING_NBT);
 
         try {
-          File[] objectpacks = new File(System.getProperty("user.dir") + "/objectpacks").listFiles();
-          Map<Identifier, Material> materialsMap = new HashMap<Identifier, Material>();
-          materialsMap.putAll(mapVanillaMaterials());
-          for (final File namespace : objectpacks) {
-            try {
-                int materialAmount = 0;
-                for (final File material : new File(namespace.getPath() + "/blocks/materials").listFiles()) {
-                  String id = namespace.getName() + ":" + FilenameUtils.getBaseName(material.getName());
+            File[] objectpacks = new File(System.getProperty("user.dir") + "/objectpacks").listFiles();
+            Map<Identifier, Material> materialsMap = new HashMap<Identifier, Material>();
+            materialsMap.putAll(mapVanillaMaterials());
+            for (final File namespace : objectpacks) {
+              try {
+                  int materialAmount = 0;
+                  for (final File material : new File(namespace.getPath() + "/blocks/materials").listFiles()) {
+                    String id = namespace.getName() + ":" + FilenameUtils.getBaseName(material.getName());
+                    try {
+                      Material newMaterial = BlockReader.readMaterial(getObjectFromFile(material));
+                      materialsMap.put(new Identifier(id), newMaterial);
+                      materialAmount++;
+                    } catch (JsonSyntaxException e) {
+                      logger.error("Couldn't load material '" + id + "': " + e.getMessage());
+                    }
+                  }
+                  logger.info("Loaded " + materialAmount + " materials");
+                } catch (NullPointerException e) {
+                }
+                try {
+                  int soundAmount = 0;
+                  for (final File soundGroup : new File(namespace.getPath() + "/blocks/sound_groups").listFiles()) {
+                    String id = namespace.getName() + ":" + FilenameUtils.getBaseName(soundGroup.getName());
+                    try {
+                      BlockSoundGroup newSoundGroup = BlockReader.readSoundGroup(getObjectFromFile(soundGroup));
+                      soundGroupMap.put(new Identifier(id), newSoundGroup);
+                      soundAmount++;
+                    } catch (JsonSyntaxException e) {
+                      logger.error("Couldn't load block sound group '" + id + "': " + e.getMessage());
+                    }
+                  }
+                  logger.info("Loaded " + soundAmount + " block sound groups");
+                } catch (NullPointerException e) {
+                }
+              try {
+                int blockAmount = 0;
+                for (final File block : new File(namespace.getPath() + "/blocks").listFiles()) {
+                  String id = namespace.getName() + ":" + FilenameUtils.getBaseName(block.getName());
                   try {
-                    Material newMaterial = BlockReader.readMaterial(getObjectFromFile(material));
-                    materialsMap.put(new Identifier(id), newMaterial);
-                    materialAmount++;
+                    Block newBlock = BlockReader.readBlock(getObjectFromFile(block), materialsMap, soundGroupMap);
+                    try {
+                      Registry.register(Registry.BLOCK, new Identifier(id), newBlock);
+                    } catch (RuntimeException e) {
+                      Registry.register(Registry.BLOCK, Registry.BLOCK.getRawId(Registry.BLOCK.get(new Identifier(id))), id, newBlock);
+                    }
+                    blockAmount++;
                   } catch (JsonSyntaxException e) {
-                    logger.error("Couldn't load material '" + id + "': " + e.getMessage());
+                    logger.error("Couldn't register block '" + id + "': " + e.getMessage());
                   }
                 }
-                logger.info("Loaded " + materialAmount + " materials");
+                logger.info("Registered " + blockAmount + " blocks");
               } catch (NullPointerException e) {
               }
               try {
-                int soundAmount = 0;
-                for (final File soundGroup : new File(namespace.getPath() + "/blocks/sound_groups").listFiles()) {
-                  String id = namespace.getName() + ":" + FilenameUtils.getBaseName(soundGroup.getName());
-                  try {
-                    BlockSoundGroup newSoundGroup = BlockReader.readSoundGroup(getObjectFromFile(soundGroup));
-                    soundGroupMap.put(new Identifier(id), newSoundGroup);
-                    soundAmount++;
-                  } catch (JsonSyntaxException e) {
-                    logger.error("Couldn't load block sound group '" + id + "': " + e.getMessage());
+                  int itemAmount = 0;
+                  for (final File item : new File(namespace.getPath() + "/items").listFiles()) {
+                      String id = namespace.getName() + ":" + FilenameUtils.getBaseName(item.getName());
+                      try {
+                          Item newItem = new Item(new Item.Settings());
+                          Registry.register(Registry.ITEM, new Identifier(id), newItem);
+                          itemAmount++;
+                      } catch (JsonSyntaxException e) {
+                          logger.error("Couldn't register item '" + id + "': " + e.getMessage());
+                      }
                   }
-                }
-                logger.info("Loaded " + soundAmount + " block sound groups");
+                  logger.info("Registered " + itemAmount + " items");
               } catch (NullPointerException e) {
               }
-            try {
-              int blockAmount = 0;
-              for (final File block : new File(namespace.getPath() + "/blocks").listFiles()) {
-                String id = namespace.getName() + ":" + FilenameUtils.getBaseName(block.getName());
-                try {
-                  Block newBlock = new Block(BlockReader.readSettings(getObjectFromFile(block), materialsMap, soundGroupMap));
-                  try {
-                    Registry.register(Registry.BLOCK, new Identifier(id), newBlock);
-                  } catch (RuntimeException e) {
-                    Registry.register(Registry.BLOCK, Registry.BLOCK.getRawId(Registry.BLOCK.get(new Identifier(id))), id, newBlock);
+              try {
+                  int effectAmount = 0;
+                  for (final File effect : new File(namespace.getPath() + "/effects").listFiles()) {
+                      String id = namespace.getName() + ":" + FilenameUtils.getBaseName(effect.getName());
+                      try {
+                          StatusEffect newEffect = new StatusEffect(StatusEffectType.HARMFUL, 100);
+                          Registry.register(Registry.STATUS_EFFECT, new Identifier(id), newEffect);
+                          effectAmount++;
+                      } catch (JsonSyntaxException e) {
+                          logger.error("Couldn't register status effect '" + id + "': " + e.getMessage());
+                      }
                   }
-                  blockAmount++;
-                } catch (JsonSyntaxException e) {
-                  logger.error("Couldn't register block '" + id + "': " + e.getMessage());
-                }
+                  logger.info("Registered " + effectAmount + " status effects");
+              } catch (NullPointerException e) {
               }
-              logger.info("Registered " + blockAmount + " blocks");
-            } catch (NullPointerException e) {
             }
-            try {
-                int itemAmount = 0;
-                for (final File item : new File(namespace.getPath() + "/items").listFiles()) {
-                    String id = namespace.getName() + ":" + FilenameUtils.getBaseName(item.getName());
-                    try {
-                        Item newItem = new Item(new Item.Settings());
-                        Registry.register(Registry.ITEM, new Identifier(id), newItem);
-                        itemAmount++;
-                    } catch (JsonSyntaxException e) {
-                        logger.error("Couldn't register item '" + id + "': " + e.getMessage());
-                    }
-                }
-                logger.info("Registered " + itemAmount + " items");
-            } catch (NullPointerException e) {
-            }
-            try {
-                int effectAmount = 0;
-                for (final File effect : new File(namespace.getPath() + "/effects").listFiles()) {
-                    String id = namespace.getName() + ":" + FilenameUtils.getBaseName(effect.getName());
-                    try {
-                        StatusEffect newEffect = new PublicConstructors.PublicStatusEffect(StatusEffectType.HARMFUL, 100);
-                        Registry.register(Registry.STATUS_EFFECT, new Identifier(id), newEffect);
-                        effectAmount++;
-                    } catch (JsonSyntaxException e) {
-                        logger.error("Couldn't register status effect '" + id + "': " + e.getMessage());
-                    }
-                }
-                logger.info("Registered " + effectAmount + " status effects");
-            } catch (NullPointerException e) {
-            }
+          } catch (NullPointerException e) {
           }
-        } catch (NullPointerException e) {
-        }
     }
     
 }

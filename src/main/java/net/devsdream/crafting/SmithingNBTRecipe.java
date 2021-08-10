@@ -45,7 +45,7 @@ public class SmithingNBTRecipe extends SmithingRecipe {
         Main.logger.info("start: " + out.copy().getOrCreateNbt().asString());
         out.setNbt(this.getOutput().copy().getNbt());
         Main.logger.info("begin: " + out.copy().getOrCreateNbt().asString());
-        this.getOverrides().iterator().forEachRemaining((path) -> {
+        this.getOverrides().forEach((path) -> {
             ItemStack base = inventory.getStack(0).copy();
             Main.logger.info("base: " + base.copy().getOrCreateNbt().asString());
             if (base.getNbt() != null) {
