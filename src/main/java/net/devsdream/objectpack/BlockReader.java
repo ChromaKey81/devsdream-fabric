@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.BiFunction;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -13,14 +14,15 @@ import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.JsonOps;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.devsdream.Main;
 import net.devsdream.util.ChromaJsonHelper;
+import net.devsdream.util.ChromaGeneral.QuadConsumer;
 import net.minecraft.block.*;
 import net.minecraft.block.Oxidizable.OxidizationLevel;
 import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.piston.PistonBehavior;
-import net.minecraft.block.sapling.SaplingGenerator;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
@@ -28,15 +30,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootTables;
 import net.minecraft.particle.ParticleEffect;
+import net.minecraft.predicate.StatePredicate;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.SignType;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
@@ -260,16 +262,8 @@ public class BlockReader {
                 ChromaJsonHelper.getBooleanOrDefault(object, "replaceable", false), pistonBehavior);
     }
 
-    private static boolean falseContextPredicate(BlockState state, BlockView world, BlockPos pos) {
-        return false;
-    }
-
-    private static boolean trueContextPredicate(BlockState state, BlockView world, BlockPos pos) {
-        return false;
-    }
-
     public static Block.Settings readSettings(JsonObject object, Map<Identifier, Material> materialMap,
-            Map<Identifier, BlockSoundGroup> soundGroupMap) throws JsonSyntaxException {
+            Map<Identifier, BlockSoundGroup> soundGroupMap, JsonObject overallBlock) throws JsonSyntaxException {
         Material material;
         Identifier materialIdentifier = new Identifier(JsonHelper.getString(object, "material"));
         if (materialMap.get(materialIdentifier) != null) {
@@ -279,14 +273,30 @@ public class BlockReader {
         }
         Block.Settings settings = Block.Settings.of(material);
 
+        Block temp = BlockReader.fromBlockType(overallBlock, settings, new BlockType(
+                new Identifier(ChromaJsonHelper.getStringOrDefault(overallBlock, "type", "minecraft:simple")), null));
+
         MapColor color = material.getColor();
         if (JsonHelper.hasElement(object, "map_color")) {
-            color = mapColors.get(JsonHelper.getString(object, "map_color"));
-            if (color == null)
-                throw new JsonSyntaxException("Unknown map color '" + object.get("map_color").getAsString() + "'");
+            List<Block.Settings> out = new ArrayList<Block.Settings>();
+            out.add(settings);
+            applySettingWithOptions(object, "map_color", settings, temp.getStateManager(), (obj, key) -> {
+                String name = JsonHelper.getString(obj, key);
+                MapColor mapColor = mapColors.get(name);
+                if (mapColor == null) {
+                    throw new JsonSyntaxException("Unknown map color '" + name + "'");
+                }
+                return mapColor;
+            }, (map, defaultValue, stateManager, set) -> {
+                out.set(0, Block.Settings.of(material, (state) -> {
+                    return returnOption(map, defaultValue, stateManager, state);
+                }));
+            }, (set, obj, key, valueSupplier) -> out.set(0,
+                    Block.Settings.of(material, valueSupplier.apply(obj, key))));
+            settings = out.get(0);
+        } else {
+            settings.mapColor(color);
         }
-
-        settings.mapColor(color);
 
         boolean flag = false;
 
@@ -305,35 +315,54 @@ public class BlockReader {
             settings.air();
 
         if (object.has("allows_spawning")) {
-            JsonElement allowsSpawning = object.get("allows_spawning");
-            if (allowsSpawning.isJsonArray()) {
-                List<EntityType<?>> entityList = new ArrayList<EntityType<?>>();
-                JsonHelper.getArray(object, "allows_spawning").forEach(element -> {
-                    entityList.add(ChromaJsonHelper.asEntity(element, "entity type"));
-                });
-                settings.allowsSpawning((state, world, pos, type) -> entityList.contains(type));
-            } else if (JsonHelper.isBoolean(allowsSpawning)) {
-                if (JsonHelper.getBoolean(object, "allows_spawning")) {
-                    settings.allowsSpawning((state, world, pos, type) -> true);
+            applySettingWithOptions(object, "allows_spawning", settings, temp.getStateManager(), (obj, key) -> {
+                JsonElement allowsSpawning = obj.get(key);
+                if (allowsSpawning.isJsonArray()) {
+                    List<EntityType<?>> types = new ArrayList<EntityType<?>>();
+                    JsonHelper.asArray(allowsSpawning, "JSON array").forEach((entry) -> {
+                        types.add(ChromaJsonHelper.asEntity(entry, "entity type"));
+                    });
+                    return types;
                 } else {
-                    settings.allowsSpawning((state, world, pos, type) -> false);
+                    return JsonHelper.asBoolean(allowsSpawning, "boolean or JSON array");
                 }
-            } else {
-                throw new JsonSyntaxException(
-                        "Expected 'allows_spawning' to be a Boolean or an array of entity types, was "
-                                + JsonHelper.getType(allowsSpawning));
-            }
+            }, (map, defaultValue, stateManager, set) -> set.allowsSpawning((state, world, pos, type) -> {
+                List<Boolean> result = new ArrayList<Boolean>();
+                if (defaultValue instanceof Boolean) {
+                    result.add((boolean) defaultValue);
+                } else {
+                    result.add(((List<EntityType<?>>) defaultValue).contains(type));
+                }
+                map.forEach((predicate, returnValue) -> {
+                    if (predicate.conditions.stream().allMatch((condition) -> condition.test(stateManager, state))) {
+                        if (returnValue instanceof Boolean) {
+                            result.set(0, (boolean) returnValue);
+                        } else {
+                            result.set(0, ((List<EntityType<?>>) returnValue).contains(type));
+                        }
+                    }
+                });
+                return result.get(0);
+            }), (set, obj, key, valueSupplier) -> set.allowsSpawning((state, world, pos, type) -> {
+                Object value = valueSupplier.apply(obj, key);
+                if (value instanceof Boolean) {
+                    return (boolean) value;
+                } else {
+                    return ((List<EntityType<?>>) value).contains(type);
+                }
+            }));
         }
 
         if (ChromaJsonHelper.getBooleanOrDefault(object, "air", false))
             settings.air();
 
-        if (JsonHelper.hasElement(object, "blocks_vision")) {
-            if (JsonHelper.asBoolean(object.get("blocks_vision"), "'blocks_vision'")) {
-                settings.blockVision((state, world, pos) -> true);
-            } else {
-                settings.blockVision((state, world, pos) -> false);
-            }
+        if (object.has("blocks_vision")) {
+            applySettingWithOptions(object, "blocks_vision", settings, temp.getStateManager(),
+                    (obj, key) -> JsonHelper.getBoolean(obj, key),
+                    (map, defaultValue, stateManager, set) -> set
+                            .blockVision((state, world, pos) -> returnOption(map, defaultValue, stateManager, state)),
+                    (set, obj, key, valueSupplier) -> set
+                            .blockVision((state, world, pos) -> valueSupplier.apply(obj, key)));
         }
 
         if (JsonHelper.hasElement(object, "drops")) {
@@ -348,8 +377,14 @@ public class BlockReader {
         if (ChromaJsonHelper.getBooleanOrDefault(object, "dynamic_bounds", false))
             settings.dynamicBounds();
 
-        if (ChromaJsonHelper.getBooleanOrDefault(object, "emissive_lighting", false))
-            settings.emissiveLighting(BlockReader::falseContextPredicate);
+        if (object.has("emissive_lighting")) {
+            applySettingWithOptions(object, "emissive_lighting", settings, temp.getStateManager(),
+                    (obj, key) -> JsonHelper.getBoolean(obj, key),
+                    (map, defaultValue, stateManager, set) -> set.emissiveLighting(
+                            (state, world, pos) -> returnOption(map, defaultValue, stateManager, state)),
+                    (set, obj, key, valueSupplier) -> set
+                            .emissiveLighting((state, world, pos) -> valueSupplier.apply(obj, key)));
+        }
 
         if (object.has("hardness"))
             settings.hardness(JsonHelper.asFloat(object.get("hardness"), "hardness"));
@@ -359,16 +394,21 @@ public class BlockReader {
 
         settings.jumpVelocityMultiplier(ChromaJsonHelper.getFloatOrDefault(object, "jump_velocity_multiplier", 1.0F));
 
-        settings.luminance((state) -> {
-            return ChromaJsonHelper.getIntOrDefault(object, "luminance", 0);
-        });
+        if (object.has("luminance")) {
+            applySettingWithOptions(object, "luminance", settings, temp.getStateManager(),
+                    (obj, key) -> JsonHelper.getInt(obj, key),
+                    (map, defaultValue, stateManager, set) -> set
+                            .luminance((state) -> returnOption(map, defaultValue, stateManager, state)),
+                    (set, obj, key, valueSupplier) -> set.luminance((state) -> valueSupplier.apply(obj, key)));
+        }
 
         if (object.has("post_process")) {
-            if (JsonHelper.asBoolean(object.get("post_process"), "post process")) {
-                settings.postProcess(BlockReader::trueContextPredicate);
-            } else {
-                settings.postProcess(BlockReader::falseContextPredicate);
-            }
+            applySettingWithOptions(object, "post_process", settings, temp.getStateManager(),
+                    (obj, key) -> JsonHelper.getBoolean(obj, key),
+                    (map, defaultValue, stateManager, set) -> set
+                            .postProcess((state, world, pos) -> returnOption(map, defaultValue, stateManager, state)),
+                    (set, obj, key, valueSupplier) -> set
+                            .postProcess((state, world, pos) -> valueSupplier.apply(obj, key)));
         }
 
         if (ChromaJsonHelper.getBooleanOrDefault(object, "requires_tool", false))
@@ -377,28 +417,29 @@ public class BlockReader {
         settings.slipperiness(ChromaJsonHelper.getFloatOrDefault(object, "slipperiness", 0.6F));
 
         if (object.has("solid_block")) {
-            if (JsonHelper.asBoolean(object.get("solid_block"), "solid block")) {
-                settings.solidBlock(BlockReader::trueContextPredicate);
-            } else {
-                settings.solidBlock(BlockReader::falseContextPredicate);
-            }
+            applySettingWithOptions(object, "solid_block", settings, temp.getStateManager(),
+                    (obj, key) -> JsonHelper.getBoolean(obj, key),
+                    (map, defaultValue, stateManager, set) -> set
+                            .solidBlock((state, world, pos) -> returnOption(map, defaultValue, stateManager, state)),
+                    (set, obj, key, valueSupplier) -> set
+                            .solidBlock((state, world, pos) -> valueSupplier.apply(obj, key)));
         }
-
-        BlockSoundGroup soundGroup = BlockSoundGroup.STONE;
-        Identifier soundGroupIdentifier = new Identifier(JsonHelper.getString(object, "sounds"));
-        if (soundGroupMap.get(soundGroupIdentifier) != null) {
-            soundGroup = soundGroupMap.get(soundGroupIdentifier);
-        } else {
-            throw new JsonSyntaxException("Unknown sound group '" + soundGroupIdentifier.toString() + "'");
-        }
-        settings.sounds(soundGroup);
 
         if (object.has("suffocates")) {
-            if (JsonHelper.asBoolean(object.get("suffocates"), "suffocates")) {
-                settings.suffocates(BlockReader::trueContextPredicate);
-            } else {
-                settings.suffocates(BlockReader::falseContextPredicate);
-            }
+            applySettingWithOptions(object, "suffocates", settings, temp.getStateManager(),
+                    (obj, key) -> JsonHelper.getBoolean(obj, key),
+                    (map, defaultValue, stateManager, set) -> set
+                            .suffocates((state, world, pos) -> returnOption(map, defaultValue, stateManager, state)),
+                    (set, obj, key, valueSupplier) -> set
+                            .suffocates((state, world, pos) -> valueSupplier.apply(obj, key)));
+        }
+
+        Identifier soundGroupIdentifier = new Identifier(
+                ChromaJsonHelper.getStringOrDefault(object, "sounds", "stone"));
+        if (soundGroupMap.get(soundGroupIdentifier) != null) {
+            settings.sounds(soundGroupMap.get(soundGroupIdentifier));
+        } else {
+            throw new JsonSyntaxException("Unknown sound group '" + soundGroupIdentifier.toString() + "'");
         }
 
         if (ChromaJsonHelper.getBooleanOrDefault(object, "tick_randomly", false))
@@ -409,9 +450,45 @@ public class BlockReader {
         return settings;
     }
 
+    static <T> T returnOption(Map<StatePredicate, T> map, T defaultValue, StateManager<Block, BlockState> stateManager,
+            BlockState state) {
+        List<T> result = new ArrayList<T>();
+        result.add(defaultValue);
+        map.forEach((predicate, returnValue) -> {
+            if (predicate.conditions.stream().allMatch((condition) -> condition.test(stateManager, state))) {
+                result.set(0, returnValue);
+            }
+        });
+        return result.get(0);
+    }
+
+    static <T> void applySettingWithOptions(JsonObject object, String settingKey, Block.Settings settings,
+            StateManager<Block, BlockState> stateManager, BiFunction<JsonObject, String, T> valueSupplier,
+            QuadConsumer<Map<StatePredicate, T>, T, StateManager<Block, BlockState>, Block.Settings> apply,
+            QuadConsumer<Block.Settings, JsonObject, String, BiFunction<JsonObject, String, T>> alt) {
+        JsonElement element = object.get(settingKey);
+        if (element.isJsonObject()) {
+            Map<StatePredicate, T> map = new HashMap<StatePredicate, T>();
+            JsonObject settingObj = JsonHelper.asObject(element, "JSON object");
+            T defaultValue = valueSupplier.apply(settingObj, "default");
+            ChromaJsonHelper.getArrayOrDefault(settingObj, "options", new JsonArray()).forEach((entry) -> {
+                JsonObject entryObj = JsonHelper.asObject(entry, "JSON object");
+                T value = valueSupplier.apply(entryObj, settingKey);
+                StatePredicate statePredicate = StatePredicate.fromJson(entryObj.get("block_state"));
+                statePredicate.check(stateManager, (propertyName) -> {
+                    throw new JsonSyntaxException("Block has no property '" + propertyName + "'");
+                });
+                map.put(statePredicate, value);
+            });
+            apply.accept(map, defaultValue, stateManager, settings);
+        } else {
+            alt.accept(settings, object, settingKey, valueSupplier);
+        }
+    }
+
     private static Block fromBlockType(JsonObject object, Block.Settings settings, BlockType type)
             throws JsonSyntaxException {
-        if (type.getIdentifier().getNamespace() == Identifier.DEFAULT_NAMESPACE) {
+        if (type.getIdentifier().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
             switch (type.getIdentifier().getPath()) {
                 case "simple": {
                     return new Block(settings);
@@ -432,7 +509,8 @@ public class BlockReader {
                 case "attached_stem": {
                     Block gourd = ChromaJsonHelper.getBlock(object, "gourd_block");
                     if (!(gourd instanceof GourdBlock)) {
-                        throw new JsonSyntaxException("Expected a block of type minecraft:gourd or extending type like minecraft:melon or minecraft:pumpkin");
+                        throw new JsonSyntaxException(
+                                "Expected a block of type minecraft:gourd or extending type like minecraft:melon or minecraft:pumpkin");
                     } else {
                         return new AttachedStemBlock((GourdBlock) gourd, () -> {
                             return ChromaJsonHelper.getItemOrDefault(object, "pick_block_item", Items.AIR);
@@ -504,8 +582,7 @@ public class BlockReader {
                     return new CandleBlock(settings);
                 }
                 case "candle_cake": {
-                    return new CandleCakeBlock(ChromaJsonHelper.getBlock(object, "candle"),
-                            settings);
+                    return new CandleCakeBlock(ChromaJsonHelper.getBlock(object, "candle"), settings);
                 }
                 case "carpet": {
                     return new CarpetBlock(settings);
@@ -544,7 +621,8 @@ public class BlockReader {
                 case "chorus_flower": {
                     Block plant = ChromaJsonHelper.getBlock(object, "chorus_plant");
                     if (!(plant instanceof ChorusPlantBlock)) {
-                        throw new JsonSyntaxException("Expected a block of type minecraft:chorus_plant or extending type");
+                        throw new JsonSyntaxException(
+                                "Expected a block of type minecraft:chorus_plant or extending type");
                     } else {
                         return new ChorusFlowerBlock((ChorusPlantBlock) plant, settings);
                     }
@@ -574,26 +652,22 @@ public class BlockReader {
                     return new ConduitBlock(settings);
                 }
                 case "connecting": {
-                    return new ConnectingBlock(
-                            ChromaJsonHelper.getFloatOrDefault(object, "radius", 0), settings);
+                    return new ConnectingBlock(ChromaJsonHelper.getFloatOrDefault(object, "radius", 0), settings);
                 }
                 case "coral": {
-                    return new CoralBlock(
-                            ChromaJsonHelper.getBlock(object, "dead_coral_block"), settings);
+                    return new CoralBlock(ChromaJsonHelper.getBlock(object, "dead_coral_block"), settings);
                 }
                 case "coral_block": {
                     return new CoralBlockBlock(ChromaJsonHelper.getBlock(object, "dead_coral_block"), settings);
                 }
                 case "coral_fan": {
-                    return new CoralBlock(
-                            ChromaJsonHelper.getBlock(object, "dead_coral_block"), settings);
+                    return new CoralBlock(ChromaJsonHelper.getBlock(object, "dead_coral_block"), settings);
                 }
                 case "coral_parent": {
                     return new CoralParentBlock(settings);
                 }
                 case "coral_wall_fan": {
-                    return new CoralBlock(
-                            ChromaJsonHelper.getBlock(object, "dead_coral_block"), settings);
+                    return new CoralBlock(ChromaJsonHelper.getBlock(object, "dead_coral_block"), settings);
                 }
                 case "crafting_table": {
                     return new CraftingTableBlock(settings);
@@ -638,8 +712,7 @@ public class BlockReader {
                     return new DropperBlock(settings);
                 }
                 case "dyed_carpet": {
-                    return new DyedCarpetBlock(
-                            ChromaJsonHelper.getDyeColor(object, "dye_color"), settings);
+                    return new DyedCarpetBlock(ChromaJsonHelper.getDyeColor(object, "dye_color"), settings);
                 }
                 case "enchanting_table": {
                     return new EnchantingTableBlock(settings);
@@ -691,8 +764,7 @@ public class BlockReader {
                 case "fluid": {
                     Fluid fluid = ChromaJsonHelper.getFluid(object, "fluid");
                     if (fluid instanceof FlowableFluid) {
-                        return new FluidBlock(
-                                (FlowableFluid) ChromaJsonHelper.getFluid(object, "fluid"), settings);
+                        return new FluidBlock((FlowableFluid) ChromaJsonHelper.getFluid(object, "fluid"), settings);
                     } else {
                         throw new JsonSyntaxException("Fluid must be flowable");
                     }
@@ -743,9 +815,8 @@ public class BlockReader {
                     return new HopperBlock(settings);
                 }
                 case "horizontal_connecting": {
-                    return new HorizontalConnectingBlock(
-                            JsonHelper.getFloat(object, "radius_1"), JsonHelper.getFloat(object, "radius_2"),
-                            JsonHelper.getFloat(object, "bounding_height_1"),
+                    return new HorizontalConnectingBlock(JsonHelper.getFloat(object, "radius_1"),
+                            JsonHelper.getFloat(object, "radius_2"), JsonHelper.getFloat(object, "bounding_height_1"),
                             JsonHelper.getFloat(object, "bounding_height_2"),
                             JsonHelper.getFloat(object, "collision_height"), settings);
                 }
@@ -804,7 +875,8 @@ public class BlockReader {
                                     return ActionResult.success(world.isClient);
                                 });
                     });
-                    Biome.Precipitation target = Biome.Precipitation.byName(ChromaJsonHelper.getStringOrDefault(object, "precipitation", null));
+                    Biome.Precipitation target = Biome.Precipitation
+                            .byName(ChromaJsonHelper.getStringOrDefault(object, "precipitation", null));
                     return new LeveledCauldronBlock(settings, (precipitation) -> {
                         return precipitation == target;
                     }, behaviorMap);
@@ -953,7 +1025,8 @@ public class BlockReader {
                                     return ActionResult.success(world.isClient);
                                 });
                     });
-                    Biome.Precipitation target = Biome.Precipitation.byName(ChromaJsonHelper.getStringOrDefault(object, "precipitation", null));
+                    Biome.Precipitation target = Biome.Precipitation
+                            .byName(ChromaJsonHelper.getStringOrDefault(object, "precipitation", null));
                     return new PowderSnowCauldronBlock(settings, (precipitation) -> {
                         return precipitation == target;
                     }, behaviorMap);
@@ -1025,9 +1098,12 @@ public class BlockReader {
                     JsonArray treesBees = ChromaJsonHelper.getArrayOrDefault(object, "trees_bees", trees);
                     JsonArray treesLarge = ChromaJsonHelper.getArrayOrDefault(object, "large_trees", new JsonArray());
                     if (treesLarge.size() > 0) {
-                        return new SaplingBlock(new DynamicLargeTreeSaplingGenerator(getTree(trees), getTree(treesBees), getTree(treesLarge), getWeight(trees), getWeight(treesBees), getWeight(treesLarge)), settings);
+                        return new SaplingBlock(new DynamicLargeTreeSaplingGenerator(getTree(trees), getTree(treesBees),
+                                getTree(treesLarge), getWeight(trees), getWeight(treesBees), getWeight(treesLarge)),
+                                settings);
                     } else {
-                        return new SaplingBlock(new DynamicSaplingGenerator(getTree(trees), getTree(treesBees), getWeight(trees), getWeight(treesBees)), settings);
+                        return new SaplingBlock(new DynamicSaplingGenerator(getTree(trees), getTree(treesBees),
+                                getWeight(trees), getWeight(treesBees)), settings);
                     }
                 }
                 case "scaffolding": {
@@ -1051,12 +1127,12 @@ public class BlockReader {
                     if (!SignType.stream().anyMatch(t -> t.getName() == signType)) {
                         throw new JsonSyntaxException("Unknown type '" + signType + "'");
                     }
-                    return new SignBlock(settings, SignType.stream().filter(t -> t.getName() == signType).findFirst().get());
+                    return new SignBlock(settings,
+                            SignType.stream().filter(t -> t.getName() == signType).findFirst().get());
                 }
                 // TODO: Make custom skull types possible
                 case "skull": {
-                    SkullBlock.SkullType skullType = skullTypes
-                            .get(JsonHelper.getString(object, "skull_type"));
+                    SkullBlock.SkullType skullType = skullTypes.get(JsonHelper.getString(object, "skull_type"));
                     if (skullType != null) {
                         return new SkullBlock(skullType, settings);
                     } else {
@@ -1124,7 +1200,8 @@ public class BlockReader {
                 case "stem": {
                     Block gourd = ChromaJsonHelper.getBlock(object, "gourd_block");
                     if (!(gourd instanceof GourdBlock)) {
-                        throw new JsonSyntaxException("Expected a block of type minecraft:gourd or extending type like minecraft:melon or minecraft:pumpkin");
+                        throw new JsonSyntaxException(
+                                "Expected a block of type minecraft:gourd or extending type like minecraft:melon or minecraft:pumpkin");
                     } else {
                         return new AttachedStemBlock((GourdBlock) gourd, () -> {
                             return ChromaJsonHelper.getItemOrDefault(object, "pick_block_item", Items.AIR);
@@ -1168,7 +1245,8 @@ public class BlockReader {
                     return new TntBlock(settings);
                 }
                 case "torch": {
-                    return new TorchBlock(settings, (ParticleEffect) ChromaJsonHelper.getParticleType(object, "particle"));
+                    return new TorchBlock(settings,
+                            (ParticleEffect) ChromaJsonHelper.getParticleType(object, "particle"));
                 }
                 case "transparent": {
                     return new TransparentBlock(settings);
@@ -1179,7 +1257,8 @@ public class BlockReader {
                 case "tripwire": {
                     Block tripwireHook = ChromaJsonHelper.getBlock(object, "tripwire_hook_block");
                     if (!(tripwireHook instanceof TripwireHookBlock)) {
-                        throw new JsonSyntaxException("Expected a block of type minecraft:tripwire_hook or extending type");
+                        throw new JsonSyntaxException(
+                                "Expected a block of type minecraft:tripwire_hook or extending type");
                     } else {
                         return new TripwireBlock((TripwireHookBlock) tripwireHook, settings);
                     }
@@ -1219,7 +1298,8 @@ public class BlockReader {
                     if (!SignType.stream().anyMatch(t -> t.getName() == signType)) {
                         throw new JsonSyntaxException("Unknown type '" + signType + "'");
                     }
-                    return new WallSignBlock(settings, SignType.stream().filter(t -> t.getName() == signType).findFirst().get());
+                    return new WallSignBlock(settings,
+                            SignType.stream().filter(t -> t.getName() == signType).findFirst().get());
                 }
                 case "wall_skull": {
                     SkullBlock.SkullType skullType = skullTypes.get(JsonHelper.getString(object, "skull_type"));
@@ -1231,7 +1311,8 @@ public class BlockReader {
                     }
                 }
                 case "wall_torch": {
-                    return new WallTorchBlock(settings, (ParticleEffect) ChromaJsonHelper.getParticleType(object, "particle"));
+                    return new WallTorchBlock(settings,
+                            (ParticleEffect) ChromaJsonHelper.getParticleType(object, "particle"));
                 }
                 case "wall_wither_skull": {
                     return new WallWitherSkullBlock(settings);
@@ -1277,6 +1358,7 @@ public class BlockReader {
         });
         return list;
     }
+
     static List<ConfiguredFeature<TreeFeatureConfig, ?>> getTree(JsonArray possibilities) throws JsonSyntaxException {
         List<ConfiguredFeature<TreeFeatureConfig, ?>> list = new ArrayList<ConfiguredFeature<TreeFeatureConfig, ?>>();
         possibilities.forEach((element) -> {
@@ -1290,9 +1372,11 @@ public class BlockReader {
     }
 
     public static Block readBlock(JsonObject object, Map<Identifier, Material> materialMap,
-            Map<Identifier, BlockSoundGroup> soundGroupMap) {
-        Block block = fromBlockType(object, readSettings(object, materialMap, soundGroupMap),
-                new BlockType(new Identifier(ChromaJsonHelper.getStringOrDefault(object, "type", "minecraft:simple")), null));
+            Map<Identifier, BlockSoundGroup> soundGroupMap) throws JsonSyntaxException {
+        Block block = fromBlockType(object,
+                readSettings(JsonHelper.getObject(object, "settings"), materialMap, soundGroupMap, object),
+                new BlockType(new Identifier(ChromaJsonHelper.getStringOrDefault(object, "type", "minecraft:simple")),
+                        null));
         return block;
     }
 }

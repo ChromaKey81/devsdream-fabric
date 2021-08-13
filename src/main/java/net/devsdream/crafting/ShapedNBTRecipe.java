@@ -63,7 +63,7 @@ public class ShapedNBTRecipe extends ShapedRecipe {
            packetByteBuf.writeVarInt(shapedRecipe.getWidth());
            packetByteBuf.writeVarInt(shapedRecipe.getHeight());
            packetByteBuf.writeString(shapedRecipe.getGroup());
-           Iterator var3 = shapedRecipe.getIngredients().iterator();
+           Iterator<Ingredient> var3 = shapedRecipe.getIngredients().iterator();
 
            while (var3.hasNext()) {
               Ingredient ingredient = (Ingredient) var3.next();

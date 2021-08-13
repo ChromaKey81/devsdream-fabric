@@ -6,7 +6,9 @@ extendable method net/minecraft/recipe/ShapedRecipe createPatternMatrix ([Ljava/
 
 accessible method net/minecraft/entity/effect/StatusEffect <init> (Lnet/minecraft/entity/effect/StatusEffectType;I)V
 
-accessible field net/minecraft/resource/AbstractFileResourcePack base Ljava/io/File;
+accessible field net/minecraft/predicate/StatePredicate conditions Ljava/util/List;
+accessible class net/minecraft/predicate/StatePredicate$Condition
+accessible method net/minecraft/predicate/StatePredicate$Condition test (Lnet/minecraft/state/StateManager;Lnet/minecraft/state/State;)B
 
 accessible method net/minecraft/block/AirBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 accessible method net/minecraft/block/AttachedStemBlock <init> (Lnet/minecraft/block/GourdBlock;Ljava/util/function/Supplier;Lnet/minecraft/block/AbstractBlock$Settings;)V
@@ -92,6 +94,7 @@ accessible method net/minecraft/block/StairsBlock <init> (Lnet/minecraft/block/B
 accessible method net/minecraft/block/StemBlock <init> (Lnet/minecraft/block/GourdBlock;Ljava/util/function/Supplier;Lnet/minecraft/block/AbstractBlock$Settings;)V
 accessible method net/minecraft/block/StoneButtonBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 accessible method net/minecraft/block/StructureBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
+accessible method net/minecraft/block/StructureVoidBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 accessible method net/minecraft/block/SugarCaneBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 accessible method net/minecraft/block/TorchBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;Lnet/minecraft/particle/ParticleEffect;)V
 accessible method net/minecraft/block/TransparentBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
@@ -100,7 +103,7 @@ accessible method net/minecraft/block/TrappedChestBlock <init> (Lnet/minecraft/b
 accessible method net/minecraft/block/WallMountedBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 accessible method net/minecraft/block/WallPlayerSkullBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 accessible method net/minecraft/block/WallRedstoneTorchBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
-accessible method net/minecraft/block/WallSkullBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
+accessible method net/minecraft/block/WallSkullBlock <init> (Lnet/minecraft/block/SkullBlock$SkullType;Lnet/minecraft/block/AbstractBlock$Settings;)V
 accessible method net/minecraft/block/WallTorchBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;Lnet/minecraft/particle/ParticleEffect;)V
 accessible method net/minecraft/block/WallWitherSkullBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 accessible method net/minecraft/block/WeightedPressurePlateBlock <init> (ILnet/minecraft/block/AbstractBlock$Settings;)V
