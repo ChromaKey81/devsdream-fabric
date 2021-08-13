@@ -55,42 +55,42 @@ public class BlockReader {
 
     private static Map<String, MapColor> mapMapColors() {
         Map<String, MapColor> map = new HashMap<String, MapColor>();
-        map.put("clear", MapColor.CLEAR);
-        map.put("pale_green", MapColor.PALE_GREEN);
-        map.put("pale_yellow", MapColor.PALE_YELLOW);
-        map.put("white_gray", MapColor.WHITE_GRAY);
-        map.put("bright_red", MapColor.BRIGHT_RED);
-        map.put("pale_purple", MapColor.PALE_PURPLE);
-        map.put("iron_gray", MapColor.IRON_GRAY);
-        map.put("dark_green", MapColor.DARK_GREEN);
-        map.put("white", MapColor.WHITE);
-        map.put("light_blue_gray", MapColor.LIGHT_BLUE_GRAY);
-        map.put("dirt_brown", MapColor.DIRT_BROWN);
-        map.put("stone_gray", MapColor.STONE_GRAY);
-        map.put("water_blue", MapColor.WATER_BLUE);
-        map.put("oak_tan", MapColor.OAK_TAN);
-        map.put("off_white", MapColor.OFF_WHITE);
-        map.put("orange", MapColor.ORANGE);
-        map.put("magenta", MapColor.MAGENTA);
-        map.put("light_blue", MapColor.LIGHT_BLUE);
-        map.put("yellow", MapColor.YELLOW);
-        map.put("lime", MapColor.LIME);
-        map.put("pink", MapColor.PINK);
-        map.put("gray", MapColor.GRAY);
-        map.put("light_gray", MapColor.LIGHT_GRAY);
-        map.put("cyan", MapColor.CYAN);
-        map.put("purple", MapColor.PURPLE);
-        map.put("blue", MapColor.BLUE);
-        map.put("brown", MapColor.BROWN);
-        map.put("green", MapColor.GREEN);
-        map.put("red", MapColor.RED);
-        map.put("black", MapColor.BLACK);
+        map.put("none", MapColor.CLEAR);
+        map.put("grass", MapColor.PALE_GREEN);
+        map.put("sand", MapColor.PALE_YELLOW);
+        map.put("wool", MapColor.WHITE_GRAY);
+        map.put("fire", MapColor.BRIGHT_RED);
+        map.put("ice", MapColor.PALE_PURPLE);
+        map.put("metal", MapColor.IRON_GRAY);
+        map.put("plant", MapColor.DARK_GREEN);
+        map.put("snow", MapColor.WHITE);
+        map.put("clay", MapColor.LIGHT_BLUE_GRAY);
+        map.put("dirt", MapColor.DIRT_BROWN);
+        map.put("stone", MapColor.STONE_GRAY);
+        map.put("water", MapColor.WATER_BLUE);
+        map.put("wood", MapColor.OAK_TAN);
+        map.put("quartz", MapColor.OFF_WHITE);
+        map.put("color_orange", MapColor.ORANGE);
+        map.put("color_magenta", MapColor.MAGENTA);
+        map.put("color_light_blue", MapColor.LIGHT_BLUE);
+        map.put("color_yellow", MapColor.YELLOW);
+        map.put("color_lime", MapColor.LIME);
+        map.put("color_pink", MapColor.PINK);
+        map.put("color_gray", MapColor.GRAY);
+        map.put("color_light_gray", MapColor.LIGHT_GRAY);
+        map.put("color_cyan", MapColor.CYAN);
+        map.put("color_purple", MapColor.PURPLE);
+        map.put("color_blue", MapColor.BLUE);
+        map.put("color_brown", MapColor.BROWN);
+        map.put("color_green", MapColor.GREEN);
+        map.put("color_red", MapColor.RED);
+        map.put("color_black", MapColor.BLACK);
         map.put("gold", MapColor.GOLD);
         map.put("diamond_blue", MapColor.DIAMOND_BLUE);
-        map.put("lapis_blue", MapColor.LAPIS_BLUE);
-        map.put("emerald_green", MapColor.EMERALD_GREEN);
-        map.put("spruce_brown", MapColor.SPRUCE_BROWN);
-        map.put("dark_red", MapColor.DARK_RED);
+        map.put("lapis", MapColor.LAPIS_BLUE);
+        map.put("emerald", MapColor.EMERALD_GREEN);
+        map.put("podzol", MapColor.SPRUCE_BROWN);
+        map.put("nether", MapColor.DARK_RED);
         map.put("terracotta_white", MapColor.TERRACOTTA_WHITE);
         map.put("terracotta_orange", MapColor.TERRACOTTA_ORANGE);
         map.put("terracotta_magenta", MapColor.TERRACOTTA_MAGENTA);
@@ -107,16 +107,16 @@ public class BlockReader {
         map.put("terracotta_green", MapColor.TERRACOTTA_BLUE);
         map.put("terracotta_red", MapColor.TERRACOTTA_RED);
         map.put("terracotta_black", MapColor.TERRACOTTA_BLACK);
-        map.put("dull_red", MapColor.DULL_RED);
-        map.put("dull_pink", MapColor.DULL_PINK);
-        map.put("dark_crimson", MapColor.DARK_CRIMSON);
-        map.put("teal", MapColor.TEAL);
-        map.put("dark_aqua", MapColor.DARK_AQUA);
-        map.put("dark_dull_pink", MapColor.DARK_DULL_PINK);
-        map.put("bright_teal", MapColor.BRIGHT_TEAL);
-        map.put("deepslate_gray", MapColor.DEEPSLATE_GRAY);
-        map.put("raw_iron_pink", MapColor.RAW_IRON_PINK);
-        map.put("lichen_green", MapColor.LICHEN_GREEN);
+        map.put("crimson_nylium", MapColor.DULL_RED);
+        map.put("crimson_stem", MapColor.DULL_PINK);
+        map.put("crimson_hyphae", MapColor.DARK_CRIMSON);
+        map.put("warped_nylium", MapColor.TEAL);
+        map.put("warped__stem", MapColor.DARK_AQUA);
+        map.put("warped_hyphae", MapColor.DARK_DULL_PINK);
+        map.put("warped_wart_block", MapColor.BRIGHT_TEAL);
+        map.put("deepslate", MapColor.DEEPSLATE_GRAY);
+        map.put("raw_iron", MapColor.RAW_IRON_PINK);
+        map.put("glow_lichen", MapColor.LICHEN_GREEN);
         return map;
     }
 
@@ -145,26 +145,26 @@ public class BlockReader {
         putVanillaSoundGroup(map, "powder_snow", BlockSoundGroup.POWDER_SNOW);
         putVanillaSoundGroup(map, "ladder", BlockSoundGroup.LADDER);
         putVanillaSoundGroup(map, "anvil", BlockSoundGroup.ANVIL);
-        putVanillaSoundGroup(map, "slime", BlockSoundGroup.SLIME);
-        putVanillaSoundGroup(map, "honey", BlockSoundGroup.HONEY);
+        putVanillaSoundGroup(map, "slime_block", BlockSoundGroup.SLIME);
+        putVanillaSoundGroup(map, "honey_block", BlockSoundGroup.HONEY);
         putVanillaSoundGroup(map, "wet_grass", BlockSoundGroup.WET_GRASS);
-        putVanillaSoundGroup(map, "coral", BlockSoundGroup.CORAL);
+        putVanillaSoundGroup(map, "coral_block", BlockSoundGroup.CORAL);
         putVanillaSoundGroup(map, "bamboo", BlockSoundGroup.BAMBOO);
         putVanillaSoundGroup(map, "bamboo_sapling", BlockSoundGroup.BAMBOO_SAPLING);
         putVanillaSoundGroup(map, "scaffolding", BlockSoundGroup.SCAFFOLDING);
         putVanillaSoundGroup(map, "sweet_berry_bush", BlockSoundGroup.SWEET_BERRY_BUSH);
         putVanillaSoundGroup(map, "crop", BlockSoundGroup.CROP);
-        putVanillaSoundGroup(map, "stem", BlockSoundGroup.STEM);
+        putVanillaSoundGroup(map, "hard_crop", BlockSoundGroup.STEM);
         putVanillaSoundGroup(map, "vine", BlockSoundGroup.VINE);
         putVanillaSoundGroup(map, "nether_wart", BlockSoundGroup.NETHER_WART);
         putVanillaSoundGroup(map, "lantern", BlockSoundGroup.LANTERN);
-        putVanillaSoundGroup(map, "nether_stem", BlockSoundGroup.NETHER_STEM);
+        putVanillaSoundGroup(map, "stem", BlockSoundGroup.NETHER_STEM);
         putVanillaSoundGroup(map, "nylium", BlockSoundGroup.NYLIUM);
         putVanillaSoundGroup(map, "fungus", BlockSoundGroup.FUNGUS);
         putVanillaSoundGroup(map, "roots", BlockSoundGroup.ROOTS);
         putVanillaSoundGroup(map, "shroomlight", BlockSoundGroup.SHROOMLIGHT);
         putVanillaSoundGroup(map, "weeping_vines", BlockSoundGroup.WEEPING_VINES);
-        putVanillaSoundGroup(map, "weeping_vines_low_pitch", BlockSoundGroup.WEEPING_VINES_LOW_PITCH);
+        putVanillaSoundGroup(map, "twisting_vines", BlockSoundGroup.WEEPING_VINES_LOW_PITCH);
         putVanillaSoundGroup(map, "soul_sand", BlockSoundGroup.SOUL_SAND);
         putVanillaSoundGroup(map, "soul_soil", BlockSoundGroup.SOUL_SOIL);
         putVanillaSoundGroup(map, "basalt", BlockSoundGroup.BASALT);
@@ -173,15 +173,15 @@ public class BlockReader {
         putVanillaSoundGroup(map, "nether_bricks", BlockSoundGroup.NETHER_BRICKS);
         putVanillaSoundGroup(map, "nether_sprouts", BlockSoundGroup.NETHER_SPROUTS);
         putVanillaSoundGroup(map, "nether_ore", BlockSoundGroup.NETHER_ORE);
-        putVanillaSoundGroup(map, "bone", BlockSoundGroup.BONE);
-        putVanillaSoundGroup(map, "netherite", BlockSoundGroup.NETHERITE);
+        putVanillaSoundGroup(map, "bone_block", BlockSoundGroup.BONE);
+        putVanillaSoundGroup(map, "netherite_block", BlockSoundGroup.NETHERITE);
         putVanillaSoundGroup(map, "ancient_debris", BlockSoundGroup.ANCIENT_DEBRIS);
         putVanillaSoundGroup(map, "lodestone", BlockSoundGroup.LODESTONE);
         putVanillaSoundGroup(map, "chain", BlockSoundGroup.CHAIN);
         putVanillaSoundGroup(map, "nether_gold_ore", BlockSoundGroup.NETHER_GOLD_ORE);
         putVanillaSoundGroup(map, "gilded_blackstone", BlockSoundGroup.GILDED_BLACKSTONE);
         putVanillaSoundGroup(map, "candle", BlockSoundGroup.CANDLE);
-        putVanillaSoundGroup(map, "amethyst_block", BlockSoundGroup.AMETHYST_BLOCK);
+        putVanillaSoundGroup(map, "amethyst", BlockSoundGroup.AMETHYST_BLOCK);
         putVanillaSoundGroup(map, "amethyst_cluster", BlockSoundGroup.AMETHYST_CLUSTER);
         putVanillaSoundGroup(map, "small_amethyst_bud", BlockSoundGroup.SMALL_AMETHYST_BUD);
         putVanillaSoundGroup(map, "medium_amethyst_bud", BlockSoundGroup.MEDIUM_AMETHYST_BUD);
@@ -196,7 +196,7 @@ public class BlockReader {
         putVanillaSoundGroup(map, "azalea", BlockSoundGroup.AZALEA);
         putVanillaSoundGroup(map, "flowering_azalea", BlockSoundGroup.FLOWERING_AZALEA);
         putVanillaSoundGroup(map, "moss_carpet", BlockSoundGroup.MOSS_CARPET);
-        putVanillaSoundGroup(map, "moss_block", BlockSoundGroup.MOSS_BLOCK);
+        putVanillaSoundGroup(map, "moss", BlockSoundGroup.MOSS_BLOCK);
         putVanillaSoundGroup(map, "big_dripleaf", BlockSoundGroup.BIG_DRIPLEAF);
         putVanillaSoundGroup(map, "small_dripleaf", BlockSoundGroup.SMALL_DRIPLEAF);
         putVanillaSoundGroup(map, "rooted_dirt", BlockSoundGroup.ROOTED_DIRT);
@@ -305,17 +305,17 @@ public class BlockReader {
             flag = true;
         }
 
-        if (!ChromaJsonHelper.getBooleanOrDefault(object, "opaque", true)) {
+        if (!ChromaJsonHelper.getBooleanOrDefault(object, "can_occlude", true)) {
             settings.nonOpaque();
         } else if (flag) {
-            throw new JsonSyntaxException("Block cannot be opaque without collision");
+            throw new JsonSyntaxException("Block cannot occlude without collision");
         }
 
         if (ChromaJsonHelper.getBooleanOrDefault(object, "air", false))
             settings.air();
 
-        if (object.has("allows_spawning")) {
-            applySettingWithOptions(object, "allows_spawning", settings, temp.getStateManager(), (obj, key) -> {
+        if (object.has("valid_spawn")) {
+            applySettingWithOptions(object, "valid_spawn", settings, temp.getStateManager(), (obj, key) -> {
                 JsonElement allowsSpawning = obj.get(key);
                 if (allowsSpawning.isJsonArray()) {
                     List<EntityType<?>> types = new ArrayList<EntityType<?>>();
@@ -356,8 +356,8 @@ public class BlockReader {
         if (ChromaJsonHelper.getBooleanOrDefault(object, "air", false))
             settings.air();
 
-        if (object.has("blocks_vision")) {
-            applySettingWithOptions(object, "blocks_vision", settings, temp.getStateManager(),
+        if (object.has("blocks_view")) {
+            applySettingWithOptions(object, "blocks_view", settings, temp.getStateManager(),
                     (obj, key) -> JsonHelper.getBoolean(obj, key),
                     (map, defaultValue, stateManager, set) -> set
                             .blockVision((state, world, pos) -> returnOption(map, defaultValue, stateManager, state)),
@@ -365,20 +365,20 @@ public class BlockReader {
                             .blockVision((state, world, pos) -> valueSupplier.apply(obj, key)));
         }
 
-        if (JsonHelper.hasElement(object, "drops")) {
-            JsonElement dropsLike = object.get("drops");
+        if (JsonHelper.hasElement(object, "drops_like")) {
+            JsonElement dropsLike = object.get("drops_like");
             if (Identifier.tryParse(dropsLike.getAsString()) == LootTables.EMPTY) {
                 settings.dropsNothing();
             } else {
-                settings.dropsLike(ChromaJsonHelper.asBlock(dropsLike, "drops"));
+                settings.dropsLike(ChromaJsonHelper.asBlock(dropsLike, "drops_like"));
             }
         }
 
-        if (ChromaJsonHelper.getBooleanOrDefault(object, "dynamic_bounds", false))
+        if (ChromaJsonHelper.getBooleanOrDefault(object, "dynamic_shape", false))
             settings.dynamicBounds();
 
-        if (object.has("emissive_lighting")) {
-            applySettingWithOptions(object, "emissive_lighting", settings, temp.getStateManager(),
+        if (object.has("emissive_rendering")) {
+            applySettingWithOptions(object, "emissive_rendering", settings, temp.getStateManager(),
                     (obj, key) -> JsonHelper.getBoolean(obj, key),
                     (map, defaultValue, stateManager, set) -> set.emissiveLighting(
                             (state, world, pos) -> returnOption(map, defaultValue, stateManager, state)),
@@ -386,16 +386,16 @@ public class BlockReader {
                             .emissiveLighting((state, world, pos) -> valueSupplier.apply(obj, key)));
         }
 
-        if (object.has("hardness"))
-            settings.hardness(JsonHelper.asFloat(object.get("hardness"), "hardness"));
+        if (object.has("destroy_time"))
+            settings.hardness(JsonHelper.getFloat(object, "destroy_time"));
 
-        if (object.has("resistance"))
-            settings.resistance(JsonHelper.asFloat(object.get("resistance"), "resistance"));
+        if (object.has("exposion_resistance"))
+            settings.resistance(JsonHelper.getFloat(object, "explosion_resistance"));
 
         settings.jumpVelocityMultiplier(ChromaJsonHelper.getFloatOrDefault(object, "jump_velocity_multiplier", 1.0F));
 
-        if (object.has("luminance")) {
-            applySettingWithOptions(object, "luminance", settings, temp.getStateManager(),
+        if (object.has("light_level")) {
+            applySettingWithOptions(object, "light_level", settings, temp.getStateManager(),
                     (obj, key) -> JsonHelper.getInt(obj, key),
                     (map, defaultValue, stateManager, set) -> set
                             .luminance((state) -> returnOption(map, defaultValue, stateManager, state)),
@@ -411,10 +411,10 @@ public class BlockReader {
                             .postProcess((state, world, pos) -> valueSupplier.apply(obj, key)));
         }
 
-        if (ChromaJsonHelper.getBooleanOrDefault(object, "requires_tool", false))
+        if (ChromaJsonHelper.getBooleanOrDefault(object, "requires_tool_for_drops", false))
             settings.requiresTool();
 
-        settings.slipperiness(ChromaJsonHelper.getFloatOrDefault(object, "slipperiness", 0.6F));
+        settings.slipperiness(ChromaJsonHelper.getFloatOrDefault(object, "friction", 0.6F));
 
         if (object.has("solid_block")) {
             applySettingWithOptions(object, "solid_block", settings, temp.getStateManager(),
@@ -507,13 +507,13 @@ public class BlockReader {
                     return new AnvilBlock(settings);
                 }
                 case "attached_stem": {
-                    Block gourd = ChromaJsonHelper.getBlock(object, "gourd_block");
+                    Block gourd = ChromaJsonHelper.getBlock(object, "fruit");
                     if (!(gourd instanceof GourdBlock)) {
                         throw new JsonSyntaxException(
-                                "Expected a block of type minecraft:gourd or extending type like minecraft:melon or minecraft:pumpkin");
+                                "Expected a block of a type which extends the abstract minecraft:stem_grown");
                     } else {
                         return new AttachedStemBlock((GourdBlock) gourd, () -> {
-                            return ChromaJsonHelper.getItemOrDefault(object, "pick_block_item", Items.AIR);
+                            return ChromaJsonHelper.getItemOrDefault(object, "seeds", Items.AIR);
                         }, settings);
                     }
                 }
@@ -544,7 +544,7 @@ public class BlockReader {
                 case "beehive": {
                     return new BeehiveBlock(settings);
                 }
-                case "beetroots": {
+                case "beetroot": {
                     return new BeetrootsBlock(settings);
                 }
                 case "bell": {
@@ -575,7 +575,7 @@ public class BlockReader {
                     return new CakeBlock(settings);
                 }
                 case "campfire": {
-                    return new CampfireBlock(ChromaJsonHelper.getBooleanOrDefault(object, "emits_particles", true),
+                    return new CampfireBlock(ChromaJsonHelper.getBooleanOrDefault(object, "spawn_particles", true),
                             JsonHelper.getInt(object, "fire_damage"), settings);
                 }
                 case "candle": {
@@ -587,7 +587,7 @@ public class BlockReader {
                 case "carpet": {
                     return new CarpetBlock(settings);
                 }
-                case "carrots": {
+                case "carrot": {
                     return new CarrotsBlock(settings);
                 }
                 case "cartography_table": {
@@ -599,17 +599,17 @@ public class BlockReader {
                 case "cauldron": {
                     return new CauldronBlock(settings);
                 }
-                case "cave_vines_body": {
+                case "cave_vines_plant": {
                     return new CaveVinesBodyBlock(settings);
                 }
-                case "cave_vines_head": {
+                case "cave_vines": {
                     return new CaveVinesHeadBlock(settings);
                 }
                 case "chain": {
                     return new ChainBlock(settings);
                 }
                 case "chest": {
-                    BlockEntityType<?> blockEntityType = ChromaJsonHelper.getBlockEntity(object, "chest_block_entity");
+                    BlockEntityType<?> blockEntityType = ChromaJsonHelper.getBlockEntity(object, "block_entity");
                     if (blockEntityType.instantiate(null, null) instanceof ChestBlockEntity) {
                         return new ChestBlock(settings, () -> {
                             return (BlockEntityType<ChestBlockEntity>) blockEntityType;
@@ -619,7 +619,7 @@ public class BlockReader {
                     }
                 }
                 case "chorus_flower": {
-                    Block plant = ChromaJsonHelper.getBlock(object, "chorus_plant");
+                    Block plant = ChromaJsonHelper.getBlock(object, "chorus_plant_block");
                     if (!(plant instanceof ChorusPlantBlock)) {
                         throw new JsonSyntaxException(
                                 "Expected a block of type minecraft:chorus_plant or extending type");
@@ -630,7 +630,7 @@ public class BlockReader {
                 case "chorus_plant": {
                     return new ChorusPlantBlock(settings);
                 }
-                case "cobweb": {
+                case "web": {
                     return new CobwebBlock(settings);
                 }
                 case "cocoa": {
@@ -646,28 +646,28 @@ public class BlockReader {
                     return new ComposterBlock(settings);
                 }
                 case "concrete_powder": {
-                    return new ConcretePowderBlock(ChromaJsonHelper.getBlock(object, "hardened"), settings);
+                    return new ConcretePowderBlock(ChromaJsonHelper.getBlock(object, "concrete"), settings);
                 }
                 case "conduit": {
                     return new ConduitBlock(settings);
                 }
-                case "connecting": {
+                case "pipe": {
                     return new ConnectingBlock(ChromaJsonHelper.getFloatOrDefault(object, "radius", 0), settings);
                 }
                 case "coral": {
-                    return new CoralBlock(ChromaJsonHelper.getBlock(object, "dead_coral_block"), settings);
+                    return new CoralBlock(ChromaJsonHelper.getBlock(object, "dead_block"), settings);
                 }
-                case "coral_block": {
-                    return new CoralBlockBlock(ChromaJsonHelper.getBlock(object, "dead_coral_block"), settings);
+                case "coral_plant": {
+                    return new CoralBlockBlock(ChromaJsonHelper.getBlock(object, "dead_block"), settings);
                 }
                 case "coral_fan": {
-                    return new CoralBlock(ChromaJsonHelper.getBlock(object, "dead_coral_block"), settings);
+                    return new CoralFanBlock(ChromaJsonHelper.getBlock(object, "dead_block"), settings);
                 }
-                case "coral_parent": {
+                case "base_coral_plant_type": {
                     return new CoralParentBlock(settings);
                 }
                 case "coral_wall_fan": {
-                    return new CoralBlock(ChromaJsonHelper.getBlock(object, "dead_coral_block"), settings);
+                    return new CoralWallFanBlock(ChromaJsonHelper.getBlock(object, "dead_block"), settings);
                 }
                 case "crafting_table": {
                     return new CraftingTableBlock(settings);
@@ -684,13 +684,13 @@ public class BlockReader {
                 case "dead_bush": {
                     return new DeadBushBlock(settings);
                 }
-                case "dead_coral": {
+                case "base_coral": {
                     return new DeadCoralBlock(settings);
                 }
-                case "dead_coral_fan": {
+                case "base_coral_fan": {
                     return new DeadCoralBlock(settings);
                 }
-                case "dead_coral_wall_fan": {
+                case "base_coral_wall_fan": {
                     return new DeadCoralWallFanBlock(settings);
                 }
                 case "detector_rail": {
@@ -711,10 +711,10 @@ public class BlockReader {
                 case "dropper": {
                     return new DropperBlock(settings);
                 }
-                case "dyed_carpet": {
+                case "wool_carpet": {
                     return new DyedCarpetBlock(ChromaJsonHelper.getDyeColor(object, "dye_color"), settings);
                 }
-                case "enchanting_table": {
+                case "enchantment_table": {
                     return new EnchantingTableBlock(settings);
                 }
                 case "end_gateway": {
@@ -735,7 +735,7 @@ public class BlockReader {
                 case "falling": {
                     return new FallingBlock(settings);
                 }
-                case "farmland": {
+                case "farm": {
                     return new FarmlandBlock(settings);
                 }
                 case "fence": {
@@ -744,7 +744,7 @@ public class BlockReader {
                 case "fence_gate": {
                     return new FenceGateBlock(settings);
                 }
-                case "fern": {
+                case "tall_grass": {
                     return new FernBlock(settings);
                 }
                 case "fire": {
@@ -758,13 +758,13 @@ public class BlockReader {
                             ChromaJsonHelper.getInt(object, "effect_duration"), settings);
                 }
                 case "flower_pot": {
-                    return new FlowerPotBlock(ChromaJsonHelper.getBlockOrDefault(object, "content", Blocks.AIR),
+                    return new FlowerPotBlock(ChromaJsonHelper.getBlockOrDefault(object, "block", Blocks.AIR),
                             settings);
                 }
-                case "fluid": {
+                case "liquid": {
                     Fluid fluid = ChromaJsonHelper.getFluid(object, "fluid");
                     if (fluid instanceof FlowableFluid) {
-                        return new FluidBlock((FlowableFluid) ChromaJsonHelper.getFluid(object, "fluid"), settings);
+                        return new FluidBlock((FlowableFluid) ChromaJsonHelper.getFluid(object, "flowing_fluid"), settings);
                     } else {
                         throw new JsonSyntaxException("Fluid must be flowable");
                     }
@@ -775,7 +775,7 @@ public class BlockReader {
                 case "fungus": {
                     return new FungusBlock(settings, () -> {
                         return Feature.HUGE_FUNGUS.configure(HugeFungusFeatureConfig.CODEC
-                                .parse(JsonOps.INSTANCE, JsonHelper.getObject(object, "huge_fungus"))
+                                .parse(JsonOps.INSTANCE, JsonHelper.getObject(object, "config"))
                                 .getOrThrow(false, (error) -> {
                                     error = new String("Could not parse huge fungus");
                                 }));
@@ -814,7 +814,7 @@ public class BlockReader {
                 case "hopper": {
                     return new HopperBlock(settings);
                 }
-                case "horizontal_connecting": {
+                case "cross_collision": {
                     return new HorizontalConnectingBlock(JsonHelper.getFloat(object, "radius_1"),
                             JsonHelper.getFloat(object, "radius_2"), JsonHelper.getFloat(object, "bounding_height_1"),
                             JsonHelper.getFloat(object, "bounding_height_2"),
@@ -853,7 +853,7 @@ public class BlockReader {
                 case "lectern": {
                     return new LecternBlock(settings);
                 }
-                case "leveled_cauldron": {
+                case "layered_cauldron": {
                     Object2ObjectOpenHashMap<Item, CauldronBehavior> behaviorMap = (Object2ObjectOpenHashMap<Item, CauldronBehavior>) Util
                             .make(new Object2ObjectOpenHashMap<Item, CauldronBehavior>(), (map) -> {
                                 map.defaultReturnValue((state, world, pos, player, hand, stack) -> {
@@ -890,7 +890,7 @@ public class BlockReader {
                 case "lightning_rod": {
                     return new LightningRodBlock(settings);
                 }
-                case "lily_pad": {
+                case "waterlily": {
                     return new LilyPadBlock(settings);
                 }
                 case "loom": {
@@ -905,16 +905,16 @@ public class BlockReader {
                 case "moss": {
                     return new MossBlock(settings);
                 }
-                case "mushroom": {
+                case "huge_mushroom": {
                     return new MushroomBlock(settings);
                 }
-                case "mushroom_plant": {
+                case "mushroom": {
                     JsonObject featureObj = JsonHelper.getObject(object, "feature");
                     return new MushroomPlantBlock(settings, () -> {
                         return ChromaJsonHelper.getFeature(featureObj, "id").getCodec()
                                 .parse(JsonOps.INSTANCE, JsonHelper.getObject(featureObj, "configuration"))
                                 .getOrThrow(false, (error) -> {
-                                    error = new String("Could not parse huge fungus");
+                                    error = new String("Could not parse " + JsonHelper.getString(featureObj, "id" + " with configuration"));
                                 });
                     });
                 }
@@ -942,62 +942,70 @@ public class BlockReader {
                 case "ore": {
                     return new OreBlock(settings);
                 }
-                case "oxidizable": {
+                case "weathering_copper_full": {
                     OxidizationLevel oxidization = mapOxidizationLevels()
-                            .get(JsonHelper.getString(object, "oxidization"));
+                            .get(JsonHelper.getString(object, "weather_state"));
                     if (oxidization != null) {
                         return new OxidizableBlock(oxidization, settings);
                     } else {
                         throw new JsonSyntaxException(
-                                "Unknown oxidization level '" + JsonHelper.getString(object, "oxidization") + "'");
+                                "Unknown oxidization level '" + JsonHelper.getString(object, "weather_state") + "'");
                     }
                 }
-                case "oxidizable_slab": {
+                case "weathering_copper_slab": {
                     OxidizationLevel oxidization = mapOxidizationLevels()
                             .get(JsonHelper.getString(object, "oxidization"));
                     if (oxidization != null) {
                         return new OxidizableSlabBlock(oxidization, settings);
                     } else {
                         throw new JsonSyntaxException(
-                                "Unknown oxidization level '" + JsonHelper.getString(object, "oxidization") + "'");
+                                "Unknown oxidization level '" + JsonHelper.getString(object, "weather_state") + "'");
                     }
                 }
-                case "oxidizable_stairs": {
+                case "weathering_copper_stair": {
                     OxidizationLevel oxidization = mapOxidizationLevels()
-                            .get(JsonHelper.getString(object, "oxidization"));
+                            .get(JsonHelper.getString(object, "weather_state"));
                     if (oxidization != null) {
-                        return new OxidizableStairsBlock(oxidization,
-                                ChromaJsonHelper.getBlock(object, "full_block").getDefaultState(), settings);
+                        if (object.get("base").isJsonObject()) {
+                            return new OxidizableStairsBlock(oxidization,
+                            BlockState.CODEC.parse(JsonOps.INSTANCE, JsonHelper.getObject(object, "base"))
+                            .getOrThrow(false, (error) -> {
+                                error = new String("Could not parse block with state");
+                            }), settings);
+                        } else {
+                            return new OxidizableStairsBlock(oxidization,
+                            ChromaJsonHelper.getBlock(object, "full_block").getDefaultState(), settings);
+                        }
                     } else {
                         throw new JsonSyntaxException(
-                                "Unknown oxidization level '" + JsonHelper.getString(object, "oxidization") + "'");
+                                "Unknown oxidization level '" + JsonHelper.getString(object, "weather_state") + "'");
                     }
                 }
-                case "pane": {
+                case "iron_bars": {
                     return new PaneBlock(settings);
                 }
-                case "pillar": {
+                case "rotated_pillar": {
                     return new PillarBlock(settings);
                 }
-                case "piston": {
+                case "piston_base": {
                     return new PistonBlock(ChromaJsonHelper.getBooleanOrDefault(object, "sticky", false), settings);
                 }
-                case "piston_extension": {
+                case "moving_piston": {
                     return new PistonExtensionBlock(settings);
                 }
                 case "piston_head": {
                     return new PistonHeadBlock(settings);
                 }
-                case "plant": {
+                case "bush": {
                     return new PlantBlock(settings);
                 }
-                case "player_skull": {
+                case "player_head": {
                     return new PlayerSkullBlock(settings);
                 }
                 case "pointed_dripstone": {
                     return new PointedDripstoneBlock(settings);
                 }
-                case "potatoes": {
+                case "potato": {
                     return new PotatoesBlock(settings);
                 }
                 case "powder_snow": {
@@ -1036,7 +1044,7 @@ public class BlockReader {
                 }
                 case "pressure_plate": {
                     PressurePlateBlock.ActivationRule activationRule;
-                    switch (ChromaJsonHelper.getStringOrDefault(object, "activation_type", "everything")) {
+                    switch (ChromaJsonHelper.getStringOrDefault(object, "sensitive_to", "everything")) {
                         case "everything": {
                             activationRule = PressurePlateBlock.ActivationRule.EVERYTHING;
                             break;
@@ -1057,7 +1065,7 @@ public class BlockReader {
                 case "rail": {
                     return new RailBlock(settings);
                 }
-                case "redstone": {
+                case "powered": {
                     return new RedstoneBlock(settings);
                 }
                 case "redstone_lamp": {
@@ -1087,7 +1095,7 @@ public class BlockReader {
                 case "roots": {
                     return new RootsBlock(settings);
                 }
-                case "rotated_infested": {
+                case "infested_rotated_pillar": {
                     return new RotatedInfestedBlock(ChromaJsonHelper.getBlock(object, "block"), settings);
                 }
                 case "sand": {
@@ -1122,7 +1130,7 @@ public class BlockReader {
                     return new ShulkerBoxBlock(ChromaJsonHelper.getDyeColorOrDefault(object, "color", null), settings);
                 }
                 // TODO: Make custom sign types possible
-                case "sign": {
+                case "standing_sign": {
                     String signType = JsonHelper.getString(object, "sign_type");
                     if (!SignType.stream().anyMatch(t -> t.getName() == signType)) {
                         throw new JsonSyntaxException("Unknown type '" + signType + "'");
@@ -1155,10 +1163,10 @@ public class BlockReader {
                 case "smoker": {
                     return new SmokerBlock(settings);
                 }
-                case "snow": {
+                case "snow_layer": {
                     return new SnowBlock(settings);
                 }
-                case "snowy": {
+                case "snowy_dirt": {
                     return new SnowyBlock(settings);
                 }
                 case "soul_fire": {
@@ -1176,16 +1184,16 @@ public class BlockReader {
                 case "spore_blossom": {
                     return new SporeBlossomBlock(settings);
                 }
-                case "sprouts": {
+                case "nether_sprouts": {
                     return new SproutsBlock(settings);
                 }
                 case "stained_glass": {
-                    return new StainedGlassBlock(ChromaJsonHelper.getDyeColor(object, "color"), settings);
+                    return new StainedGlassBlock(ChromaJsonHelper.getDyeColor(object, "dye_color"), settings);
                 }
                 case "stained_glass_pane": {
-                    return new StainedGlassPaneBlock(ChromaJsonHelper.getDyeColor(object, "color"), settings);
+                    return new StainedGlassPaneBlock(ChromaJsonHelper.getDyeColor(object, "dye_color"), settings);
                 }
-                case "stairs": {
+                case "stair": {
                     if (object.get("base").isJsonObject()) {
                         return new StairsBlock(
                                 BlockState.CODEC.parse(JsonOps.INSTANCE, JsonHelper.getObject(object, "base"))
@@ -1198,13 +1206,13 @@ public class BlockReader {
                     }
                 }
                 case "stem": {
-                    Block gourd = ChromaJsonHelper.getBlock(object, "gourd_block");
+                    Block gourd = ChromaJsonHelper.getBlock(object, "fruit");
                     if (!(gourd instanceof GourdBlock)) {
                         throw new JsonSyntaxException(
-                                "Expected a block of type minecraft:gourd or extending type like minecraft:melon or minecraft:pumpkin");
+                                "Expected a block of a type which extends the abstract minecraft:stem_grown");
                     } else {
                         return new AttachedStemBlock((GourdBlock) gourd, () -> {
-                            return ChromaJsonHelper.getItemOrDefault(object, "pick_block_item", Items.AIR);
+                            return ChromaJsonHelper.getItemOrDefault(object, "seeds", Items.AIR);
                         }, settings);
                     }
                 }
@@ -1229,7 +1237,7 @@ public class BlockReader {
                 case "tall_flower": {
                     return new TallFlowerBlock(settings);
                 }
-                case "tall_plant": {
+                case "double_plant": {
                     return new TallPlantBlock(settings);
                 }
                 case "tall_seagrass": {
@@ -1248,13 +1256,16 @@ public class BlockReader {
                     return new TorchBlock(settings,
                             (ParticleEffect) ChromaJsonHelper.getParticleType(object, "particle"));
                 }
-                case "transparent": {
+                case "half_transparent": {
                     return new TransparentBlock(settings);
                 }
                 case "trapdoor": {
                     return new TrapdoorBlock(settings);
                 }
-                case "tripwire": {
+                case "trapped_chest": {
+                    return new TrappedChestBlock(settings);
+                }
+                case "trip_wire": {
                     Block tripwireHook = ChromaJsonHelper.getBlock(object, "tripwire_hook_block");
                     if (!(tripwireHook instanceof TripwireHookBlock)) {
                         throw new JsonSyntaxException(
@@ -1263,7 +1274,7 @@ public class BlockReader {
                         return new TripwireBlock((TripwireHookBlock) tripwireHook, settings);
                     }
                 }
-                case "tripwire_hook": {
+                case "trip_wire_hook": {
                     return new TripwireHookBlock(settings);
                 }
                 case "turtle_egg": {
@@ -1284,13 +1295,13 @@ public class BlockReader {
                 case "wall": {
                     return new WallBlock(settings);
                 }
-                case "wall_mounted": {
+                case "face_attached_horizontal_directional": {
                     return new WallMountedBlock(settings);
                 }
-                case "wall_player_skull": {
+                case "player_wall_head": {
                     return new WallPlayerSkullBlock(settings);
                 }
-                case "wall_redstone_torch": {
+                case "redstone_wall_torch": {
                     return new WallRedstoneTorchBlock(settings);
                 }
                 case "wall_sign": {
@@ -1314,7 +1325,7 @@ public class BlockReader {
                     return new WallTorchBlock(settings,
                             (ParticleEffect) ChromaJsonHelper.getParticleType(object, "particle"));
                 }
-                case "wall_wither_skull": {
+                case "wither_wall_skull": {
                     return new WallWitherSkullBlock(settings);
                 }
                 case "weeping_vines": {
@@ -1335,7 +1346,7 @@ public class BlockReader {
                 case "wither_skull": {
                     return new WitherSkullBlock(settings);
                 }
-                case "wooden_button": {
+                case "wood_button": {
                     return new WoodenButtonBlock(settings);
                 }
                 default: {
