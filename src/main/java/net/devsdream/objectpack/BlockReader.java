@@ -249,15 +249,15 @@ public class BlockReader {
             throw new JsonSyntaxException("Unknown map color '" + object.get("map_color").getAsString() + "'");
 
         PistonBehavior pistonBehavior = pistonBehaviors
-                .get(ChromaJsonHelper.getStringOrDefault(object, "piston_behavior", "normal"));
+                .get(ChromaJsonHelper.getStringOrDefault(object, "push_reaction", "normal"));
         if (pistonBehavior == null)
             throw new JsonSyntaxException(
-                    "Unknown piston behavior '" + object.get("piston_behavior").getAsString() + "'");
+                    "Unknown push reaction '" + object.get("push_reaction").getAsString() + "'");
 
         return new Material(mapColor, ChromaJsonHelper.getBooleanOrDefault(object, "liquid", false),
                 ChromaJsonHelper.getBooleanOrDefault(object, "solid", true),
-                ChromaJsonHelper.getBooleanOrDefault(object, "blocks_movement", true),
-                ChromaJsonHelper.getBooleanOrDefault(object, "blocks_light", true),
+                ChromaJsonHelper.getBooleanOrDefault(object, "blocks_motion", true),
+                ChromaJsonHelper.getBooleanOrDefault(object, "solid_blocking", true),
                 ChromaJsonHelper.getBooleanOrDefault(object, "burnable", false),
                 ChromaJsonHelper.getBooleanOrDefault(object, "replaceable", false), pistonBehavior);
     }
