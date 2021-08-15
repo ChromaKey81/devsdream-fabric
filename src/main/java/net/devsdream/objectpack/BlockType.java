@@ -4,17 +4,10 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.util.Identifier;
 
-public class BlockType {
-
-    private final Identifier identifier;
+public class BlockType extends ObjectType {
 
     public BlockType(Identifier identifier, JsonObject object) {
-        this.identifier = identifier;
+        super(identifier, object);
     }
-
-    public Identifier getIdentifier() {
-        return this.identifier;
-    }
-    
     
 }

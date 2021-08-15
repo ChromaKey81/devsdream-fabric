@@ -242,35 +242,27 @@ public class BlockReader {
     public static final Map<String, MapColor> mapColors = mapMapColors();
     public static final Map<String, PistonBehavior> pistonBehaviors = mapPistonBehaviors();
     public static final Map<String, SkullBlock.SkullType> skullTypes = mapSkullTypes();
+    public static final Map<String, Oxidizable.OxidizationLevel> weatherStates = mapOxidizationLevels();
 
     public static Material readMaterial(JsonObject object) throws JsonSyntaxException {
-        MapColor mapColor = mapColors.get(JsonHelper.getString(object, "map_color"));
-        if (mapColor == null)
-            throw new JsonSyntaxException("Unknown map color '" + object.get("map_color").getAsString() + "'");
+        MapColor mapColor = ChromaJsonHelper.getFromMapSafe(JsonHelper.getString(object, "map_color"), "map color", mapColors);
 
-        PistonBehavior pistonBehavior = pistonBehaviors
-                .get(ChromaJsonHelper.getStringOrDefault(object, "push_reaction", "normal"));
-        if (pistonBehavior == null)
-            throw new JsonSyntaxException(
-                    "Unknown push reaction '" + object.get("push_reaction").getAsString() + "'");
+        PistonBehavior pistonBehavior = ChromaJsonHelper.getFromMapSafe(ChromaJsonHelper.getStringOrDefault(object, "push_reaction", "normal"), "push reaction", pistonBehaviors);
 
         return new Material(mapColor, ChromaJsonHelper.getBooleanOrDefault(object, "liquid", false),
                 ChromaJsonHelper.getBooleanOrDefault(object, "solid", true),
                 ChromaJsonHelper.getBooleanOrDefault(object, "blocks_motion", true),
                 ChromaJsonHelper.getBooleanOrDefault(object, "solid_blocking", true),
-                ChromaJsonHelper.getBooleanOrDefault(object, "burnable", false),
+                ChromaJsonHelper.getBooleanOrDefault(object, "flammable", false),
                 ChromaJsonHelper.getBooleanOrDefault(object, "replaceable", false), pistonBehavior);
     }
 
     public static Block.Settings readSettings(JsonObject object, Map<Identifier, Material> materialMap,
             Map<Identifier, BlockSoundGroup> soundGroupMap, JsonObject overallBlock) throws JsonSyntaxException {
-        Material material;
-        Identifier materialIdentifier = new Identifier(JsonHelper.getString(object, "material"));
-        if (materialMap.get(materialIdentifier) != null) {
-            material = materialMap.get(materialIdentifier);
-        } else {
-            throw new JsonSyntaxException("Unknown material '" + materialIdentifier.toString() + "'");
-        }
+
+        Material material = ChromaJsonHelper
+        .getFromMapSafe(new Identifier(JsonHelper.getString(object, "material")), "material", materialMap);
+
         Block.Settings settings = Block.Settings.of(material);
 
         Block temp = BlockReader.fromBlockType(overallBlock, settings, new BlockType(
@@ -281,12 +273,7 @@ public class BlockReader {
             List<Block.Settings> out = new ArrayList<Block.Settings>();
             out.add(settings);
             applySettingWithOptions(object, "map_color", settings, temp.getStateManager(), (obj, key) -> {
-                String name = JsonHelper.getString(obj, key);
-                MapColor mapColor = mapColors.get(name);
-                if (mapColor == null) {
-                    throw new JsonSyntaxException("Unknown map color '" + name + "'");
-                }
-                return mapColor;
+                return ChromaJsonHelper.getFromMapSafe(JsonHelper.getString(object, "map_color"), "map color", mapColors);
             }, (map, defaultValue, stateManager, set) -> {
                 out.set(0, Block.Settings.of(material, (state) -> {
                     return returnOption(map, defaultValue, stateManager, state);
@@ -434,13 +421,9 @@ public class BlockReader {
                             .suffocates((state, world, pos) -> valueSupplier.apply(obj, key)));
         }
 
-        Identifier soundGroupIdentifier = new Identifier(
-                ChromaJsonHelper.getStringOrDefault(object, "sounds", "stone"));
-        if (soundGroupMap.get(soundGroupIdentifier) != null) {
-            settings.sounds(soundGroupMap.get(soundGroupIdentifier));
-        } else {
-            throw new JsonSyntaxException("Unknown sound group '" + soundGroupIdentifier.toString() + "'");
-        }
+        settings.sounds(ChromaJsonHelper.getFromMapSafe(
+                new Identifier(ChromaJsonHelper.getStringOrDefault(object, "sounds", "minecraft:stone")),
+                "block sound group", soundGroupMap));
 
         if (ChromaJsonHelper.getBooleanOrDefault(object, "tick_randomly", false))
             settings.ticksRandomly();
@@ -943,43 +926,22 @@ public class BlockReader {
                     return new OreBlock(settings);
                 }
                 case "weathering_copper_full": {
-                    OxidizationLevel oxidization = mapOxidizationLevels()
-                            .get(JsonHelper.getString(object, "weather_state"));
-                    if (oxidization != null) {
-                        return new OxidizableBlock(oxidization, settings);
-                    } else {
-                        throw new JsonSyntaxException(
-                                "Unknown oxidization level '" + JsonHelper.getString(object, "weather_state") + "'");
-                    }
+                        return new OxidizableBlock(ChromaJsonHelper.getFromMapSafe(JsonHelper.getString(object, "weather_state"), "weather state", weatherStates), settings);
                 }
                 case "weathering_copper_slab": {
-                    OxidizationLevel oxidization = mapOxidizationLevels()
-                            .get(JsonHelper.getString(object, "oxidization"));
-                    if (oxidization != null) {
-                        return new OxidizableSlabBlock(oxidization, settings);
-                    } else {
-                        throw new JsonSyntaxException(
-                                "Unknown oxidization level '" + JsonHelper.getString(object, "weather_state") + "'");
-                    }
+                        return new OxidizableSlabBlock(ChromaJsonHelper.getFromMapSafe(JsonHelper.getString(object, "weather_state"), "weather state", weatherStates), settings);
                 }
                 case "weathering_copper_stair": {
-                    OxidizationLevel oxidization = mapOxidizationLevels()
-                            .get(JsonHelper.getString(object, "weather_state"));
-                    if (oxidization != null) {
                         if (object.get("base").isJsonObject()) {
-                            return new OxidizableStairsBlock(oxidization,
+                            return new OxidizableStairsBlock(ChromaJsonHelper.getFromMapSafe(JsonHelper.getString(object, "weather_state"), "weather state", weatherStates),
                             BlockState.CODEC.parse(JsonOps.INSTANCE, JsonHelper.getObject(object, "base"))
                             .getOrThrow(false, (error) -> {
                                 error = new String("Could not parse block with state");
                             }), settings);
                         } else {
-                            return new OxidizableStairsBlock(oxidization,
+                            return new OxidizableStairsBlock(ChromaJsonHelper.getFromMapSafe(JsonHelper.getString(object, "weather_state"), "weather state", weatherStates),
                             ChromaJsonHelper.getBlock(object, "full_block").getDefaultState(), settings);
                         }
-                    } else {
-                        throw new JsonSyntaxException(
-                                "Unknown oxidization level '" + JsonHelper.getString(object, "weather_state") + "'");
-                    }
                 }
                 case "iron_bars": {
                     return new PaneBlock(settings);
@@ -1140,13 +1102,7 @@ public class BlockReader {
                 }
                 // TODO: Make custom skull types possible
                 case "skull": {
-                    SkullBlock.SkullType skullType = skullTypes.get(JsonHelper.getString(object, "skull_type"));
-                    if (skullType != null) {
-                        return new SkullBlock(skullType, settings);
-                    } else {
-                        throw new JsonSyntaxException(
-                                "Unknown skull type '" + JsonHelper.getString(object, "skullTypes") + "'");
-                    }
+                        return new SkullBlock(ChromaJsonHelper.getFromMapSafe(JsonHelper.getString(object, "skull_type"), "skull type", skullTypes), settings);
                 }
                 case "slab": {
                     return new SlabBlock(settings);
@@ -1313,13 +1269,7 @@ public class BlockReader {
                             SignType.stream().filter(t -> t.getName() == signType).findFirst().get());
                 }
                 case "wall_skull": {
-                    SkullBlock.SkullType skullType = skullTypes.get(JsonHelper.getString(object, "skull_type"));
-                    if (skullType != null) {
-                        return new WallSkullBlock(skullType, settings);
-                    } else {
-                        throw new JsonSyntaxException(
-                                "Unknown skull type '" + JsonHelper.getString(object, "skullTypes") + "'");
-                    }
+                        return new WallSkullBlock(ChromaJsonHelper.getFromMapSafe(JsonHelper.getString(object, "skull_type"), "skull type", skullTypes), settings);
                 }
                 case "wall_torch": {
                     return new WallTorchBlock(settings,

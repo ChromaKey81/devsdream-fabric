@@ -10,6 +10,12 @@ accessible field net/minecraft/predicate/StatePredicate conditions Ljava/util/Li
 accessible class net/minecraft/predicate/StatePredicate$Condition
 accessible method net/minecraft/predicate/StatePredicate$Condition test (Lnet/minecraft/state/StateManager;Lnet/minecraft/state/State;)B
 
+accessible field net/minecraft/tag/BlockTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
+accessible field net/minecraft/tag/ItemTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
+accessible field net/minecraft/tag/GameEventTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
+accessible field net/minecraft/tag/EntityTypeTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
+accessible field net/minecraft/tag/FluidTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
+
 accessible method net/minecraft/block/AirBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 accessible method net/minecraft/block/AttachedStemBlock <init> (Lnet/minecraft/block/GourdBlock;Ljava/util/function/Supplier;Lnet/minecraft/block/AbstractBlock$Settings;)V
 accessible method net/minecraft/block/AzaleaBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
@@ -110,3 +116,6 @@ accessible method net/minecraft/block/WeightedPressurePlateBlock <init> (ILnet/m
 accessible method net/minecraft/block/WetSpongeBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 accessible method net/minecraft/block/WitherSkullBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 accessible method net/minecraft/block/WoodenButtonBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
+
+accessible method net/minecraft/item/AxeItem <init> (Lnet/minecraft/item/ToolMaterial;FFLnet/minecraft/item/Item$Settings;)V
+accessible method net/minecraft/item/MiningToolItem <init> (FFLnet/minecraft/item/ToolMaterial;Lnet/minecraft/tag/Tag;Lnet/minecraft/item/Item$Settings;)V

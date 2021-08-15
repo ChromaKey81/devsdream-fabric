@@ -1,5 +1,6 @@
 package net.devsdream.util;
 
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import com.google.gson.JsonArray;
@@ -11,7 +12,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
@@ -194,6 +197,24 @@ public class ChromaJsonHelper extends JsonHelper {
         return object.has(key) ? asEffect(object.get(key), key) : defaultEffect;
     }
 
+    public static StatusEffectInstance effectInstance(JsonObject statusEffect) {
+        return new StatusEffectInstance(ChromaJsonHelper.getEffect(statusEffect, "type"),
+                ChromaJsonHelper.getIntOrDefault(statusEffect, "duration", 0),
+                ChromaJsonHelper.getIntOrDefault(statusEffect, "amplifier", 0),
+                ChromaJsonHelper.getBooleanOrDefault(statusEffect, "ambient", false),
+                ChromaJsonHelper.getBooleanOrDefault(statusEffect, "show_particles", true),
+                ChromaJsonHelper.getBooleanOrDefault(statusEffect, "show_icon", true));
+    }
+
+    public static <T, S> T getFromMapSafe(S key, String propertyName, Map<S, T> map) throws JsonSyntaxException {
+        T result = map.get(key);
+        if (result == null) {
+            throw new JsonSyntaxException("Unknown " + propertyName + " '" + key + "'");
+        } else {
+            return result;
+        }
+    }
+
     public static Fluid asFluid(JsonElement element, String name) throws JsonSyntaxException {
         if (element.isJsonPrimitive()) {
             String string = element.getAsString();
@@ -208,7 +229,7 @@ public class ChromaJsonHelper extends JsonHelper {
         if (object.has(key)) {
             return asFluid(object.get(key), key);
          } else {
-            throw new JsonSyntaxException("Missing " + key + ", expected to find a status effect");
+            throw new JsonSyntaxException("Missing " + key + ", expected to find a fluid");
          }
     }
     public static Fluid getFluidOrDefault(JsonObject object, String key, Fluid defaultFluid) throws JsonSyntaxException {
@@ -229,7 +250,7 @@ public class ChromaJsonHelper extends JsonHelper {
         if (object.has(key)) {
             return asFeature(object.get(key), key);
          } else {
-            throw new JsonSyntaxException("Missing " + key + ", expected to find a status effect");
+            throw new JsonSyntaxException("Missing " + key + ", expected to find a feature");
          }
     }
     public static Feature<? extends FeatureConfig> getFeatureOrDefault(JsonObject object, String key, Feature<?> defaultFeature) throws JsonSyntaxException {
@@ -249,21 +270,45 @@ public class ChromaJsonHelper extends JsonHelper {
         if (element.isJsonPrimitive()) {
             String string = element.getAsString();
             return (ParticleType<?>)Registry.PARTICLE_TYPE.getOrEmpty(new Identifier(string)).orElseThrow(() -> {
-               return new JsonSyntaxException("Expected " + name + " to be a feature, was unknown string '" + string + "'");
+               return new JsonSyntaxException("Expected " + name + " to be a particle type, was unknown string '" + string + "'");
             });
          } else {
-            throw new JsonSyntaxException("Expected " + name + " to be a feature, was " + getType(element));
+            throw new JsonSyntaxException("Expected " + name + " to be a particle type, was " + getType(element));
          }
     }
     public static ParticleType<?> getParticleType(JsonObject object, String key) throws JsonSyntaxException {
         if (object.has(key)) {
             return asParticleType(object.get(key), key);
          } else {
-            throw new JsonSyntaxException("Missing " + key + ", expected to find a status effect");
+            throw new JsonSyntaxException("Missing " + key + ", expected to find a particle type");
          }
     }
     public static ParticleType<?> getParticleTypeOrDefault(JsonObject object, String key, ParticleType<?> defaultParticleType) throws JsonSyntaxException {
         return object.has(key) ? asParticleType(object.get(key), key) : defaultParticleType;
+    }
+
+    public static EquipmentSlot asEquipmentSlot(JsonElement element, String name) throws JsonSyntaxException {
+        if (element.isJsonPrimitive()) {
+            String string = element.getAsString();
+            EquipmentSlot slot = EquipmentSlot.byName(name);
+            if (slot == null) {
+                throw new JsonSyntaxException("Expected " + name + " to be an equipment slot, was unknown string '" + "'");
+            } else {
+                return slot;
+            }
+         } else {
+            throw new JsonSyntaxException("Expected " + name + " to be a equipment slot, was " + getType(element));
+         }
+    }
+    public static EquipmentSlot getEquipmentSlot(JsonObject object, String key) throws JsonSyntaxException {
+        if (object.has(key)) {
+            return asEquipmentSlot(object.get(key), key);
+         } else {
+            throw new JsonSyntaxException("Missing " + key + ", expected to find an equipment slot");
+         }
+    }
+    public static EquipmentSlot getEquipmentSlotOrDefault(JsonObject object, String key, EquipmentSlot defaultSlot) throws JsonSyntaxException {
+        return object.has(key) ? asEquipmentSlot(object.get(key), key) : defaultSlot;
     }
 
     /**
