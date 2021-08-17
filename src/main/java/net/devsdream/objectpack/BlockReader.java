@@ -14,7 +14,6 @@ import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.JsonOps;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.devsdream.Main;
 import net.devsdream.util.ChromaJsonHelper;
 import net.devsdream.util.ChromaGeneral.QuadConsumer;
 import net.minecraft.block.*;

@@ -52,7 +52,7 @@ public class ExecuteCommand extends net.minecraft.server.command.ExecuteCommand 
             }));
       dispatcher.register(
             (LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) CommandManager
-                  .literal("execute").requires((source) -> {
+                  .literal("dreamexecute").requires((source) -> {
                      return source.hasPermissionLevel(2);
                   })).then(CommandManager.literal("run").redirect(dispatcher.getRoot())))
                         .then(addConditionArguments(literalCommandNode, CommandManager.literal("if"), true)))
@@ -450,7 +450,10 @@ public class ExecuteCommand extends net.minecraft.server.command.ExecuteCommand 
                         })).then(CommandManager.literal("fire").redirect(node, (context) -> {
                            return storeIntoBurnTime(context.getSource(),
                                  EntityArgumentType.getPlayer(context, "player"), requestResult);
-                        }))
+                        })).then(CommandManager.literal("freeze").redirect(node, (context) -> {
+                              return storeIntoFreezeTime(context.getSource(),
+                                    EntityArgumentType.getPlayer(context, "player"), requestResult);
+                           }))
                         .then(CommandManager.literal("effect")
                               .then(CommandManager.argument("effect", StatusEffectArgumentType.statusEffect())
                                     .then(CommandManager.literal("amplifier").redirect(node, (context) -> {
@@ -533,6 +536,13 @@ private static ServerCommandSource storeIntoBurnTime(ServerCommandSource source,
        target.setFireTicks(i);
    });
 }
+
+private static ServerCommandSource storeIntoFreezeTime(ServerCommandSource source, ServerPlayerEntity target, boolean storingResult) {
+      return source.withConsumer((context, successful, result) -> {
+          int i = storingResult ? result : (successful ? 1 : 0);
+          target.setFrozenTicks(i);
+      });
+   }
 
 private static ServerCommandSource storeIntoEffectAmplifier(ServerCommandSource source, StatusEffect effect, ServerPlayerEntity target, boolean storingResult) {
    return source.withConsumer((context, successful, result) -> {

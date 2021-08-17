@@ -19,7 +19,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.function.CommandFunction;
@@ -290,7 +289,7 @@ public class ChromaJsonHelper extends JsonHelper {
     public static EquipmentSlot asEquipmentSlot(JsonElement element, String name) throws JsonSyntaxException {
         if (element.isJsonPrimitive()) {
             String string = element.getAsString();
-            EquipmentSlot slot = EquipmentSlot.byName(name);
+            EquipmentSlot slot = EquipmentSlot.byName(string);
             if (slot == null) {
                 throw new JsonSyntaxException("Expected " + name + " to be an equipment slot, was unknown string '" + "'");
             } else {

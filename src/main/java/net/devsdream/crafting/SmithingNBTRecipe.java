@@ -11,7 +11,6 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.devsdream.util.ChromaJsonHelper;
-import net.devsdream.Main;
 
 import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.command.argument.NbtPathArgumentType.NbtPath;
