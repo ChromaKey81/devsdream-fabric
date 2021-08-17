@@ -42,12 +42,9 @@ public class SmithingNBTRecipe extends SmithingRecipe {
     @Override
     public ItemStack craft(Inventory inventory) {
         ItemStack out = super.craft(inventory).copy();
-        Main.logger.info("start: " + out.copy().getOrCreateNbt().asString());
         out.setNbt(this.getOutput().copy().getNbt());
-        Main.logger.info("begin: " + out.copy().getOrCreateNbt().asString());
         this.getOverrides().forEach((path) -> {
             ItemStack base = inventory.getStack(0).copy();
-            Main.logger.info("base: " + base.copy().getOrCreateNbt().asString());
             if (base.getNbt() != null) {
                 try {
                     List<NbtElement> source = path.get(base.getNbt().copy());
@@ -56,7 +53,6 @@ public class SmithingNBTRecipe extends SmithingRecipe {
                     }
                 } catch (CommandSyntaxException e) {
                 }
-                Main.logger.info("out: " + out.copy().getNbt().asString());
             }
         });
         return out;

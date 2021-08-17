@@ -18,11 +18,13 @@ import org.apache.logging.log4j.Logger;
 import net.devsdream.crafting.Serializers;
 import net.devsdream.objectpack.BlockReader;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectType;
 import net.minecraft.item.Item;
+import net.devsdream.commands.*;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
@@ -103,6 +105,21 @@ public class Main implements ModInitializer {
 
   @Override
   public void onInitialize() {
+
+    CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+      AirCommand.register(dispatcher);
+      CalculateCommand.register(dispatcher);
+      DamageCommand.register(dispatcher);
+      DamageItemCommand.register(dispatcher);
+      EffectCommand.register(dispatcher);
+      ExecuteCommand.register(dispatcher);
+      ExhaustCommand.register(dispatcher);
+      FeedCommand.register(dispatcher);
+      HealthCommand.register(dispatcher);
+      IgniteCommand.register(dispatcher);
+      RandomNumberCommand.register(dispatcher);
+    });
+
     Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "crafting_shaped_nbt"),
         Serializers.CRAFTING_SHAPED_NBT);
     Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "crafting_shapeless_nbt"),

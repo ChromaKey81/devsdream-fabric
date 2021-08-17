@@ -6,15 +6,28 @@ extendable method net/minecraft/recipe/ShapedRecipe createPatternMatrix ([Ljava/
 
 accessible method net/minecraft/entity/effect/StatusEffect <init> (Lnet/minecraft/entity/effect/StatusEffectType;I)V
 
+extendable method net/minecraft/server/command/ExecuteCommand addStoreArguments (Lcom/mojang/brigadier/tree/LiteralCommandNode;Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;Z)Lcom/mojang/brigadier/builder/ArgumentBuilder;
+extendable method net/minecraft/server/command/ExecuteCommand addConditionArguments (Lcom/mojang/brigadier/tree/CommandNode;Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;Z)Lcom/mojang/brigadier/builder/ArgumentBuilder;
+extendable method net/minecraft/server/command/ExecuteCommand executeStoreScore (Lnet/minecraft/server/command/ServerCommandSource;Ljava/util/Collection;Lnet/minecraft/scoreboard/ScoreboardObjective;Z)Lnet/minecraft/server/command/ServerCommandSource;
+extendable method net/minecraft/server/command/ExecuteCommand executeStoreBossbar (Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/entity/boss/CommandBossBar;ZZ)Lnet/minecraft/server/command/ServerCommandSource;
+extendable method net/minecraft/server/command/ExecuteCommand executeStoreData (Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/command/DataCommandObject;Lnet/minecraft/command/argument/NbtPathArgumentType$NbtPath;Ljava/util/function/IntFunction;Z)Lnet/minecraft/server/command/ServerCommandSource;
+
 accessible field net/minecraft/predicate/StatePredicate conditions Ljava/util/List;
 accessible class net/minecraft/predicate/StatePredicate$Condition
-accessible method net/minecraft/predicate/StatePredicate$Condition test (Lnet/minecraft/state/StateManager;Lnet/minecraft/state/State;)B
+accessible method net/minecraft/predicate/StatePredicate$Condition test (Lnet/minecraft/state/StateManager;Lnet/minecraft/state/State;)Z
 
 accessible field net/minecraft/tag/BlockTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
 accessible field net/minecraft/tag/ItemTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
 accessible field net/minecraft/tag/GameEventTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
 accessible field net/minecraft/tag/EntityTypeTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
 accessible field net/minecraft/tag/FluidTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
+
+accessible method net/minecraft/entity/damage/DamageSource <init> (Ljava/lang/String;)V
+accessible method net/minecraft/entity/damage/DamageSource setFire ()Lnet/minecraft/entity/damage/DamageSource;
+accessible method net/minecraft/entity/damage/DamageSource setBypassesArmor ()Lnet/minecraft/entity/damage/DamageSource;
+accessible method net/minecraft/entity/damage/DamageSource setOutOfWorld ()Lnet/minecraft/entity/damage/DamageSource;
+accessible method net/minecraft/entity/damage/DamageSource setUnblockable ()Lnet/minecraft/entity/damage/DamageSource;
+accessible method net/minecraft/entity/damage/DamageSource setFallingBlock ()Lnet/minecraft/entity/damage/DamageSource;
 
 accessible method net/minecraft/block/AirBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 accessible method net/minecraft/block/AttachedStemBlock <init> (Lnet/minecraft/block/GourdBlock;Ljava/util/function/Supplier;Lnet/minecraft/block/AbstractBlock$Settings;)V
