@@ -119,6 +119,7 @@ public class Main implements ModInitializer {
       IgniteCommand.register(dispatcher);
       RandomNumberCommand.register(dispatcher);
       FreezeCommand.register(dispatcher);
+      MotionCommand.register(dispatcher);
     });
 
     Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "crafting_shaped_nbt"),

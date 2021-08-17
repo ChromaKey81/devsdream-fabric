@@ -590,7 +590,7 @@ private static ServerCommandSource storeIntoXMotion(ServerCommandSource source, 
        double motionY = target.getVelocity().y;
        double motionZ = target.getVelocity().z;
        target.setVelocity((double) i, motionY, motionZ);
-       target.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(target));
+       target.velocityModified = true;
    });
 }
 
@@ -600,7 +600,7 @@ private static ServerCommandSource storeIntoYMotion(ServerCommandSource source, 
        double motionX = target.getVelocity().x;
        double motionZ = target.getVelocity().z;
        target.setVelocity(motionX, (double) i, motionZ);
-       target.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(target));
+       target.velocityModified = true;
    });
 }
 
@@ -610,7 +610,7 @@ private static ServerCommandSource storeIntoZMotion(ServerCommandSource source, 
        double motionX = target.getVelocity().x;
        double motionY = target.getVelocity().y;
        target.setVelocity(motionX, motionY, (double) i);
-       target.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(target));
+       target.velocityModified = true;
    });
 }
 }
