@@ -57,6 +57,9 @@ public class ChromaJsonHelper extends JsonHelper {
     public static JsonArray getArrayOrDefault(JsonObject object, String element, JsonArray defaultValue) throws JsonSyntaxException {
         return JsonHelper.getArray(object, element, defaultValue);
     }
+    public static JsonObject getObjectOrDefault(JsonObject object, String element, JsonObject defaultValue) {
+        return JsonHelper.getObject(object, element, defaultValue);
+    }
     public static Item getItemOrDefault(JsonObject object, String element, Item defaultValue) throws JsonSyntaxException {
         return JsonHelper.getItem(object, element, defaultValue);
     }

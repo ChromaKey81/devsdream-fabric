@@ -31,19 +31,31 @@ public class BlockType extends ObjectType {
 
     public BlockType(Identifier identifier, JsonObject object) throws JsonSyntaxException {
         super(identifier, object);
-        if (object.get("randomly_ticking") != null) this.hasRandomTicks = StatePredicate.fromJson(object.get("randomly_ticking"));
-        if (object.get("propogates_skylight_down") != null) {
-            JsonElement element = object.get("propogates_skylight_down");
-            if (element.isJsonObject()) {
-                this.propogatesSkylightDown = StatePredicate.fromJson(object);
-            } else {
-                this.propogatesSkylightDown = JsonHelper.asBoolean(object, "boolean or block state predicate");
+        if (object != null) {
+            if (object.get("randomly_ticking") != null) this.hasRandomTicks = StatePredicate.fromJson(object.get("randomly_ticking"));
+            if (object.get("propogates_skylight_down") != null) {
+                JsonElement element = object.get("propogates_skylight_down");
+                if (element.isJsonObject()) {
+                    this.propogatesSkylightDown = StatePredicate.fromJson(object);
+                } else {
+                    this.propogatesSkylightDown = JsonHelper.asBoolean(object, "boolean or block state predicate");
+                }
             }
+            this.animateTick = identifierOrNull(object, "animate_tick");
+            this.onDestroy = identifierOrNull(object, "on_destroyed");
+            this.onDestroyExplosion = identifierOrNull(object, "on_exploded");
+            this.onStep = identifierOrNull(object, "on_step");
+            this.onPlayerBreak = identifierOrNull(object, "on_player_break");
         }
-        this.animateTick = new Identifier(ChromaJsonHelper.getStringOrDefault(object, "animate_tick", null));
-        this.onDestroy = new Identifier(ChromaJsonHelper.getStringOrDefault(object, "on_destroyed", null));
-        this.onDestroyExplosion = new Identifier(ChromaJsonHelper.getStringOrDefault(object, "on_exploded", null));
-        this.onStep = new Identifier(ChromaJsonHelper.getStringOrDefault(object, "on_step", null));
+    }
+
+    static Identifier identifierOrNull(JsonObject object, String key) {
+        String identifier = ChromaJsonHelper.getStringOrDefault(object, key, null);
+        if (identifier != null){
+            return new Identifier(identifier);
+        } else {
+            return null;
+        }
     }
 
     static CommandFunction getFunction(World world, Identifier identifier) {
@@ -84,6 +96,10 @@ public class BlockType extends ObjectType {
 
     public CommandFunction getStepOnFunction(World world) {
         return getFunction(world, this.onStep);
+    }
+
+    public CommandFunction getOnPlayerDestroyFunction(World world) {
+        return getFunction(world, this.onPlayerBreak);
     }
     
 }

@@ -6,12 +6,18 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 
 public class CalculateCommand {
+
+    private static final SimpleCommandExceptionType DIVIDE_BY_ZERO_EXCEPTION = new SimpleCommandExceptionType(
+                        new TranslatableText("commands.devsdream.calculate.divide_by_zero"));
+
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("calculate").requires((user) -> {
             return user.hasPermissionLevel(2);
@@ -117,7 +123,7 @@ public class CalculateCommand {
         return context.getSource().getServer().getCommandManager().getDispatcher().execute(StringArgumentType.getString(context, argument), context.getSource());
     }
 
-    private static int performOperation(ServerCommandSource source, int valueSoFar, int input, String type) {
+    private static int performOperation(ServerCommandSource source, int valueSoFar, int input, String type) throws CommandSyntaxException {
         int newVal = 0;
         switch (type) {
             case "add": {
@@ -133,11 +139,17 @@ public class CalculateCommand {
                 break;
             }
             case "divide": {
-                newVal = valueSoFar / input;
+                if (input == 0) {
+                    if (valueSoFar == 0) {
+                        throw new SimpleCommandExceptionType(new LiteralText("Imagine that you have zero cookies and you split them evenly among zero friends. How many cookies does each person get? See? It doesn’t make sense. And Cookie Monster is sad that there are no cookies, and you are sad that you have no friends.")).create();
+                    } else throw DIVIDE_BY_ZERO_EXCEPTION.create();
+                } else newVal = valueSoFar / input;
                 break;
             }
             case "modulo": {
-                newVal = valueSoFar % input;
+                if (input == 0) {
+                    throw DIVIDE_BY_ZERO_EXCEPTION.create();
+                } else newVal = valueSoFar % input;
                 break;
             }
             case "equals": {

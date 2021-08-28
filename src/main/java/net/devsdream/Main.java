@@ -15,16 +15,27 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.devsdream.commands.AirCommand;
+import net.devsdream.commands.CalculateCommand;
+import net.devsdream.commands.DamageCommand;
+import net.devsdream.commands.DamageItemCommand;
+import net.devsdream.commands.EffectCommand;
+import net.devsdream.commands.ExecuteCommand;
+import net.devsdream.commands.ExhaustCommand;
+import net.devsdream.commands.FeedCommand;
+import net.devsdream.commands.FreezeCommand;
+import net.devsdream.commands.HealthCommand;
+import net.devsdream.commands.IgniteCommand;
+import net.devsdream.commands.MotionCommand;
+import net.devsdream.commands.RandomNumberCommand;
 import net.devsdream.crafting.Serializers;
 import net.devsdream.objectpack.BlockReader;
+import net.devsdream.objectpack.ItemReader;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectType;
 import net.minecraft.item.Item;
-import net.devsdream.commands.*;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
@@ -187,14 +198,20 @@ public class Main implements ModInitializer {
           }
           logger.info("Registered " + blockAmount + " blocks");
         } catch (NullPointerException e) {
+          e.printStackTrace();
         }
         try {
           int itemAmount = 0;
           for (final File item : new File(namespace.getPath() + "/items").listFiles()) {
             String id = namespace.getName() + ":" + FilenameUtils.getBaseName(item.getName());
             try {
-              Item newItem = new Item(new Item.Settings());
-              Registry.register(Registry.ITEM, new Identifier(id), newItem);
+              Item newItem = ItemReader.readItem(getObjectFromFile(item));
+              try {
+                Registry.register(Registry.ITEM, new Identifier(id), newItem);
+              } catch (RuntimeException e) {
+                Registry.register(Registry.ITEM, Registry.ITEM.getRawId(Registry.ITEM.get(new Identifier(id))), id,
+                    newItem);
+              }
               itemAmount++;
             } catch (JsonSyntaxException e) {
               logger.error("Couldn't register item '" + id + "': " + e.getMessage());
@@ -203,21 +220,21 @@ public class Main implements ModInitializer {
           logger.info("Registered " + itemAmount + " items");
         } catch (NullPointerException e) {
         }
-        try {
-          int effectAmount = 0;
-          for (final File effect : new File(namespace.getPath() + "/effects").listFiles()) {
-            String id = namespace.getName() + ":" + FilenameUtils.getBaseName(effect.getName());
-            try {
-              StatusEffect newEffect = new StatusEffect(StatusEffectType.HARMFUL, 100);
-              Registry.register(Registry.STATUS_EFFECT, new Identifier(id), newEffect);
-              effectAmount++;
-            } catch (JsonSyntaxException e) {
-              logger.error("Couldn't register status effect '" + id + "': " + e.getMessage());
-            }
-          }
-          logger.info("Registered " + effectAmount + " status effects");
-        } catch (NullPointerException e) {
-        }
+        // try {
+        //   int effectAmount = 0;
+        //   for (final File effect : new File(namespace.getPath() + "/effects").listFiles()) {
+        //     String id = namespace.getName() + ":" + FilenameUtils.getBaseName(effect.getName());
+        //     try {
+        //       StatusEffect newEffect = new StatusEffect(StatusEffectType.HARMFUL, 100);
+        //       Registry.register(Registry.STATUS_EFFECT, new Identifier(id), newEffect);
+        //       effectAmount++;
+        //     } catch (JsonSyntaxException e) {
+        //       logger.error("Couldn't register status effect '" + id + "': " + e.getMessage());
+        //     }
+        //   }
+        //   logger.info("Registered " + effectAmount + " status effects");
+        // } catch (NullPointerException e) {
+        // }
       }
     } catch (NullPointerException e) {
     }

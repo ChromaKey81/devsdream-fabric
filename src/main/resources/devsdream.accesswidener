@@ -3,6 +3,7 @@ extendable method net/minecraft/recipe/ShapedRecipe readSymbols (Lcom/google/gso
 extendable method net/minecraft/recipe/ShapedRecipe removePadding ([Ljava/lang/String;)[Ljava/lang/String;
 extendable method net/minecraft/recipe/ShapedRecipe getPattern (Lcom/google/gson/JsonArray;)[Ljava/lang/String;
 extendable method net/minecraft/recipe/ShapedRecipe createPatternMatrix ([Ljava/lang/String;Ljava/util/Map;II)Lnet/minecraft/util/collection/DefaultedList;
+accessible method net/minecraft/recipe/ShapelessRecipe$Serializer getIngredients (Lcom/google/gson/JsonArray;)Lnet/minecraft/util/collection/DefaultedList;
 
 accessible method net/minecraft/entity/effect/StatusEffect <init> (Lnet/minecraft/entity/effect/StatusEffectType;I)V
 
@@ -15,12 +16,6 @@ extendable method net/minecraft/server/command/ExecuteCommand executeStoreData (
 accessible field net/minecraft/predicate/StatePredicate conditions Ljava/util/List;
 accessible class net/minecraft/predicate/StatePredicate$Condition
 accessible method net/minecraft/predicate/StatePredicate$Condition test (Lnet/minecraft/state/StateManager;Lnet/minecraft/state/State;)Z
-
-accessible field net/minecraft/tag/BlockTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
-accessible field net/minecraft/tag/ItemTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
-accessible field net/minecraft/tag/GameEventTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
-accessible field net/minecraft/tag/EntityTypeTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
-accessible field net/minecraft/tag/FluidTags REQUIRED_TAGS Lnet/minecraft/tag/RequiredTagList;
 
 accessible method net/minecraft/entity/damage/DamageSource <init> (Ljava/lang/String;)V
 accessible method net/minecraft/entity/damage/DamageSource setFire ()Lnet/minecraft/entity/damage/DamageSource;

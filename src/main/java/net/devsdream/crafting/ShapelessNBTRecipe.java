@@ -41,16 +41,7 @@ public class ShapelessNBTRecipe extends ShapelessRecipe {
          }
    
          private static DefaultedList<Ingredient> getIngredients(JsonArray json) {
-            DefaultedList<Ingredient> defaultedList = DefaultedList.of();
-   
-            for(int i = 0; i < json.size(); ++i) {
-               Ingredient ingredient = Ingredient.fromJson(json.get(i));
-               if (!ingredient.isEmpty()) {
-                  defaultedList.add(ingredient);
-               }
-            }
-   
-            return defaultedList;
+            return ShapelessRecipe.Serializer.getIngredients(json);
          }
    
          public ShapelessNBTRecipe read(Identifier identifier, PacketByteBuf packetByteBuf) {
@@ -67,16 +58,7 @@ public class ShapelessNBTRecipe extends ShapelessRecipe {
          }
    
          public void write(PacketByteBuf packetByteBuf, ShapelessNBTRecipe shapelessRecipe) {
-            packetByteBuf.writeString(shapelessRecipe.getGroup());
-            packetByteBuf.writeVarInt(shapelessRecipe.getIngredients().size());
-            Iterator<Ingredient> var3 = shapelessRecipe.getIngredients().iterator();
-   
-            while(var3.hasNext()) {
-               Ingredient ingredient = (Ingredient)var3.next();
-               ingredient.write(packetByteBuf);
-            }
-   
-            packetByteBuf.writeItemStack(shapelessRecipe.getOutput());
+            new ShapelessRecipe.Serializer().write(packetByteBuf, shapelessRecipe);
          }
 
     }

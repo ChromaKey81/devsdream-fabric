@@ -101,7 +101,7 @@ public class CustomizedBlock extends Block {
 
     @Override
     public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack stack) {
-        executeFunction((w) -> this.type.getOnDestroyFunction(w), world, (w) -> w.getServer().getCommandSource().withPosition(Vec3d.of(pos)).withEntity(player), (w) -> {
+        executeFunction((w) -> this.type.getOnPlayerDestroyFunction(w), world, (w) -> w.getServer().getCommandSource().withPosition(Vec3d.of(pos)).withEntity(player), (w) -> {
             super.afterBreak(world, player, pos, state, blockEntity, stack);
         });
     }
