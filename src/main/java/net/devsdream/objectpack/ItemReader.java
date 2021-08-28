@@ -201,10 +201,7 @@ public class ItemReader {
     }
 
     public static Item readItem(JsonObject object) throws JsonSyntaxException {
-        Identifier id = new Identifier(ChromaJsonHelper.getStringOrDefault(object, "type", "minecraft:simple"));
-        Main.logger.info(id);
         ItemType type = new ItemType(new Identifier(ChromaJsonHelper.getStringOrDefault(object, "type", "minecraft:simple")), new JsonObject());
-        Main.logger.info(type.getIdentifier().toString());
         return fromItemType(object, readSettings(JsonHelper.getObject(object, "settings")), type);
     }
 

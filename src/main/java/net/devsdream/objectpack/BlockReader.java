@@ -1410,11 +1410,9 @@ public class BlockReader {
             Map<Identifier, BlockSoundGroup> soundGroupMap) throws JsonSyntaxException {
         BlockType blockType = new BlockType(
                 new Identifier(ChromaJsonHelper.getStringOrDefault(object, "type", "minecraft:simple")), null);
-        Main.logger.info(blockType.getIdentifier().toString());
         Block block = fromBlockType(object,
                     readSettings(JsonHelper.getObject(object, "settings"), materialMap, soundGroupMap, object),
                     blockType);
-        Main.logger.info("not customized");
         return block;
     }
 }

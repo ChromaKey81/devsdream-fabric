@@ -23,8 +23,6 @@ public class RightClickItem extends Item {
 
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
 
-        Main.logger.info("useable");
-
         ItemStack item = user.getStackInHand(hand);
 
         user.incrementStat(Stats.USED.getOrCreateStat(this));
@@ -32,15 +30,12 @@ public class RightClickItem extends Item {
         if (!world.isClient()) {
             CommandFunctionManager manager = world.getServer().getCommandFunctionManager();
             CommandFunction func = manager.getFunction(this.function).orElseGet(() -> {
-                Main.logger.info("function does not exist");
                 return null;
             });
             if (func != null) {
-                Main.logger.info("executing");
                 manager.execute(func, world.getServer().getCommandSource().withEntity(user));
                 return TypedActionResult.success(item);
             } else {
-                Main.logger.info("fail");
                 return TypedActionResult.fail(item);
             }
         } else {

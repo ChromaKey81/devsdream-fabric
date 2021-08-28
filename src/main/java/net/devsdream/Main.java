@@ -198,7 +198,6 @@ public class Main implements ModInitializer {
           }
           logger.info("Registered " + blockAmount + " blocks");
         } catch (NullPointerException e) {
-          e.printStackTrace();
         }
         try {
           int itemAmount = 0;
