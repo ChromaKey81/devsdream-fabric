@@ -22,6 +22,7 @@ import net.minecraft.block.CropBlock;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.block.FungusBlock;
+import net.minecraft.block.GlassBlock;
 import net.minecraft.block.InfestedBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
@@ -682,9 +683,9 @@ public class BlockReader {
                 // case "crafting_table": {
                 // return new CraftingTableBlock(settings);
                 // }
-                case "crop": {
-                    return new CropBlock(settings);
-                }
+                // case "crop": {
+                //     return new CropBlock(settings);
+                // }
                 // case "crying_obsidian": {
                 // return new CryingObsidianBlock(settings);
                 // }
@@ -743,9 +744,9 @@ public class BlockReader {
                 // case "ender_chest": {
                 // return new EnderChestBlock(settings);
                 // }
-                case "falling": {
-                    return new FallingBlock(settings);
-                }
+                // case "falling": {
+                //     return new FallingBlock(settings);
+                // }
                 // case "farm": {
                 // return new FarmlandBlock(settings);
                 // }
@@ -786,21 +787,21 @@ public class BlockReader {
                 // case "frosted_ice": {
                 // return new FrostedIceBlock(settings);
                 // }
-                case "fungus": {
-                    return new FungusBlock(settings, () -> {
-                        return Feature.HUGE_FUNGUS.configure(HugeFungusFeatureConfig.CODEC
-                                .parse(JsonOps.INSTANCE, JsonHelper.getObject(object, "config"))
-                                .getOrThrow(false, (error) -> {
-                                    error = new String("Could not parse huge fungus");
-                                }));
-                    });
-                }
+                // case "fungus": {
+                //     return new FungusBlock(settings, () -> {
+                //         return Feature.HUGE_FUNGUS.configure(HugeFungusFeatureConfig.CODEC
+                //                 .parse(JsonOps.INSTANCE, JsonHelper.getObject(object, "config"))
+                //                 .getOrThrow(false, (error) -> {
+                //                     error = new String("Could not parse huge fungus");
+                //                 }));
+                //     });
+                // }
                 // case "furnace": {
                 // return new FurnaceBlock(settings);
                 // }
-                // case "glass": {
-                // return new GlassBlock(settings);
-                // }
+                case "glass": {
+                return new GlassBlock(settings);
+                }
                 // case "glazed_terracotta": {
                 // return new GlazedTerracottaBlock(settings);
                 // }
