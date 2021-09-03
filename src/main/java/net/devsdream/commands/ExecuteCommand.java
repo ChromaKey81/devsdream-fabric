@@ -45,6 +45,9 @@ import net.minecraft.text.TranslatableText;
 
 public class ExecuteCommand extends net.minecraft.server.command.ExecuteCommand {
 
+      private static final SimpleCommandExceptionType NO_ITEM_EXCEPTION = new SimpleCommandExceptionType(
+            new TranslatableText("commands.devsdream.execute.store.player.item.failed.no_item"));
+
    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
       LiteralCommandNode<ServerCommandSource> literalCommandNode = dispatcher
             .register((LiteralArgumentBuilder) CommandManager.literal("dreamexecute").requires((source) -> {
@@ -474,19 +477,17 @@ public class ExecuteCommand extends net.minecraft.server.command.ExecuteCommand 
       return source.withConsumer((context, successful, result) -> {
          try {
             StackReference stackReference = target.getStackReference(slot);
-            if (stackReference != StackReference.EMPTY) {
-               throw new SimpleCommandExceptionType(
-                     new TranslatableText("commands.devsdream.execute.store.player.item.failed.no_item")).create();
+            if (stackReference == StackReference.EMPTY) {
+               throw NO_ITEM_EXCEPTION.create();
             } else {
                ItemStack stack = stackReference.get();
-               NbtCompound tag = stack.getNbt();
+               NbtCompound tag = stack.getOrCreateNbt();
                int i = storingResult ? result : (successful ? 1 : 0);
                path.put(tag, () -> {
                   return tagConverter.apply(i);
                });
-               stack.setNbt(stack.getNbt().copyFrom(tag));
+               stack.setNbt(stack.getOrCreateNbt().copyFrom(tag));
                target.currentScreenHandler.sendContentUpdates();
-               ;
             }
          } catch (CommandSyntaxException e) {
          }
