@@ -1,11 +1,11 @@
-package net.devsdream.objectpack;
+// package net.devsdream.objectpack;
 
-import com.google.gson.JsonObject;
+// import com.google.gson.JsonObject;
 
-import net.minecraft.util.Identifier;
+// import net.minecraft.util.Identifier;
 
-public class ItemType extends ObjectType {
-    public ItemType(Identifier identifier, JsonObject object) {
-        super(identifier, object);
-    }
-}
+// public class ItemType extends ObjectType {
+//     public ItemType(Identifier identifier, JsonObject object) {
+//         super(identifier, object);
+//     }
+// }

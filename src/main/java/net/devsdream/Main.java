@@ -1,17 +1,17 @@
 package net.devsdream;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Stream;
+// import java.io.File;
+// import java.io.FileNotFoundException;
+// import java.io.FileReader;
+// import java.io.IOException;
+// import java.util.HashMap;
+// import java.util.Map;
+// import java.util.stream.Stream;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+// import com.google.gson.JsonObject;
+// import com.google.gson.JsonSyntaxException;
 
-import org.apache.commons.io.FilenameUtils;
+// import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,16 +29,16 @@ import net.devsdream.commands.IgniteCommand;
 import net.devsdream.commands.MotionCommand;
 import net.devsdream.commands.RandomNumberCommand;
 import net.devsdream.crafting.Serializers;
-import net.devsdream.objectpack.BlockReader;
-import net.devsdream.objectpack.ItemReader;
+// import net.devsdream.objectpack.BlockReader;
+// import net.devsdream.objectpack.ItemReader;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.minecraft.block.Block;
-import net.minecraft.block.Material;
-import net.minecraft.item.Item;
-import net.minecraft.sound.BlockSoundGroup;
+// import net.minecraft.block.Block;
+// import net.minecraft.block.Material;
+// import net.minecraft.item.Item;
+// import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
+// import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
 
 public class Main implements ModInitializer {

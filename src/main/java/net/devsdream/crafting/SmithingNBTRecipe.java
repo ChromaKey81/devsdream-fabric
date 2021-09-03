@@ -41,7 +41,9 @@ public class SmithingNBTRecipe extends SmithingRecipe {
     @Override
     public ItemStack craft(Inventory inventory) {
         ItemStack out = super.craft(inventory).copy();
-        out.setNbt(this.getOutput().copy().getNbt());
+        if (this.getOutput().getNbt() != null) {
+           out.getOrCreateNbt().copyFrom(this.getOutput().getNbt().copy());
+        }
         this.getOverrides().forEach((path) -> {
             ItemStack base = inventory.getStack(0).copy();
             if (base.getNbt() != null) {
